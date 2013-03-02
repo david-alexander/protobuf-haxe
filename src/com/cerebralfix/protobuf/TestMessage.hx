@@ -15,9 +15,41 @@
 
 package com.cerebralfix.protobuf;
 
+import com.cerebralfix.protobuf.fieldtypes.BoolField;
+import com.cerebralfix.protobuf.fieldtypes.BytesField;
+import com.cerebralfix.protobuf.fieldtypes.DoubleField;
+import com.cerebralfix.protobuf.fieldtypes.EnumField;
+import com.cerebralfix.protobuf.fieldtypes.Fixed32Field;
+import com.cerebralfix.protobuf.fieldtypes.Fixed64Field;
+import com.cerebralfix.protobuf.fieldtypes.FloatField;
+import com.cerebralfix.protobuf.fieldtypes.Int32Field;
+import com.cerebralfix.protobuf.fieldtypes.Int64Field;
+import com.cerebralfix.protobuf.fieldtypes.SFixed32Field;
+import com.cerebralfix.protobuf.fieldtypes.SFixed64Field;
+import com.cerebralfix.protobuf.fieldtypes.SInt32Field;
+import com.cerebralfix.protobuf.fieldtypes.SInt64Field;
+import com.cerebralfix.protobuf.fieldtypes.StringField;
+import com.cerebralfix.protobuf.fieldtypes.UInt32Field;
+import com.cerebralfix.protobuf.fieldtypes.UInt64Field;
+
 class TestMessage implements com.cerebralfix.protobuf.Message
 {
-	public var testField:UInt32Field;
+	public var testField1:BoolField;
+	public var testField2:BytesField;
+	public var testField3:DoubleField;
+	//public var testField4:EnumField;
+	public var testField5:Fixed32Field;
+	public var testField6:Fixed64Field;
+	public var testField7:FloatField;
+	public var testField8:Int32Field;
+	public var testField9:Int64Field;
+	public var testField10:SFixed32Field;
+	public var testField11:SFixed64Field;
+	public var testField12:SInt32Field;
+	public var testField13:SInt64Field;
+	public var testField14:StringField;
+	public var testField15:UInt32Field;
+	public var testField16:UInt64Field;
 
 	public function new()
 	{

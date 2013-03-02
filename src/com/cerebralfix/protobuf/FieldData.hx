@@ -15,15 +15,17 @@
 
 package com.cerebralfix.protobuf;
 
-class UInt32Field implements Field
+import haxe.Int64;
+import haxe.io.Bytes;
+
+enum FieldData
 {
-	public inline function new()
-	{
-
-	}
-
-	public inline function readFrom(input:BytesReader):Void
-	{
-		
-	}
+	VarInt(value : Int64);
+	ThirtyTwoBit(value : Int);
+	SixtyFourBit(value : Int64);
+	LengthDelimited(value : Bytes);
+	//StartGroup;
+	//EndGroup;
+	Unknown;
+	Incomplete;
 }

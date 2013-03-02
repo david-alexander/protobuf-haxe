@@ -15,21 +15,8 @@
 
 package com.cerebralfix.protobuf;
 
-import haxe.Int32;
 import haxe.Int64;
 import haxe.io.Bytes;
-
-enum FieldData
-{
-	VarInt(value : Int);
-	ThirtyTwoBit(value : Int); // TODO: Use Int32.
-	SixtyFourBit(value : Int); // TODO: Use Int64.
-	LengthDelimited(value : Bytes);
-	//StartGroup;
-	//EndGroup;
-	Unknown;
-	Incomplete;
-}
 
 enum ReadVarIntResult
 {
@@ -113,14 +100,14 @@ class FieldDataReader
 
 		if (input.bytesAvailable() >= 8)
 		{
-			var b1 = input.readByte();
-			var b2 = input.readByte();
-			var b3 = input.readByte();
-			var b4 = input.readByte();
-			var b5 = input.readByte();
-			var b6 = input.readByte();
-			var b7 = input.readByte();
-			var b8 = input.readByte();
+			var b1:Int64 = input.readByte();
+			var b2:Int64 = input.readByte();
+			var b3:Int64 = input.readByte();
+			var b4:Int64 = input.readByte();
+			var b5:Int64 = input.readByte();
+			var b6:Int64 = input.readByte();
+			var b7:Int64 = input.readByte();
+			var b8:Int64 = input.readByte();
 
 			result = FieldData.SixtyFourBit((b1 << 56) | (b2 << 48) | (b2 << 40) | (b3 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | (b8 << 0));
 		}
@@ -153,7 +140,7 @@ class FieldDataReader
 
 	private static inline function readVarInt(input : ProtobufInput) : ReadVarIntResult
 	{
-		var varInt = 0;
+		var varInt:Int64 = 0;
 		var result = ReadVarIntResult.Incomplete;
 
 		while (input.hasByte())
@@ -167,6 +154,8 @@ class FieldDataReader
 				result = ReadVarIntResult.VarInt(varInt);
 				break;
 			}
+
+			varInt << 7;
 		}
 
 		return result;

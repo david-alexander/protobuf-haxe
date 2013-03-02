@@ -13,9 +13,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf;
+package com.cerebralfix.protobuf.fieldtypes;
 
-interface Field
+import haxe.Int64;
+
+class SInt64Field implements Field
 {
-	function readFrom(data:FieldData):Void;
+	public var _value:Int64;
+
+	public inline function new()
+	{
+
+	}
+
+	public inline function readFrom(data:FieldData):Void
+	{
+		switch (data)
+		{
+			case VarInt(value):
+			{
+				// From http://stackoverflow.com/questions/2210923/zig-zag-decoding
+				_value = Int64.xor(Int64.shr(value, 1), Int64.neg(Int64.and(value, Int64.ofInt(1))));
+			}
+
+			default: {}
+		}
+	}
 }

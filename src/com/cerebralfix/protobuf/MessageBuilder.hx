@@ -73,10 +73,10 @@ class MessageBuilder
 				var newExpr = expr(ExprDef.ENew(fieldTypePath, []));
 
 				var initExpr = macro $fieldExpr = $newExpr;
-				var readExpr = macro $fieldExpr.readFrom(input);
+				//var readExpr = macro $fieldExpr.readFrom(input);
 
 				initExprs.push(initExpr);
-				readExprs.push(readExpr);
+				//readExprs.push(readExpr);
 			}
 
 			default:

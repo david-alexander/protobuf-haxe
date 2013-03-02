@@ -13,9 +13,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf;
+package com.cerebralfix.protobuf.fieldtypes;
 
-interface Field
+class StringField implements Field
 {
-	function readFrom(data:FieldData):Void;
+	public var _string:String;
+
+	public inline function new()
+	{
+
+	}
+
+	public inline function readFrom(data:FieldData):Void
+	{
+		switch (data)
+		{
+			case LengthDelimited(bytes):
+			{
+				_string = bytes.toString();
+			}
+
+			default: {}
+		}
+	}
 }
