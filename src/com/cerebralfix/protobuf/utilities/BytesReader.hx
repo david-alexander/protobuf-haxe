@@ -51,6 +51,7 @@ class BytesReader
 		{
 #end
 			buffer.blit(0, _bytes, _position, buffer.length);
+			_position += buffer.length;
 #if debug
 		}
 		else

@@ -20,7 +20,6 @@ import haxe.Int64;
 class Int32Field implements Field
 {
 	public var _value:Int;
-
 	public inline function new()
 	{
 

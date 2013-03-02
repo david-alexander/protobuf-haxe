@@ -144,12 +144,13 @@ class FieldDataReader
 	{
 		var varInt:Int64 = Int64.ofInt(0);
 		var result = ReadVarIntResult.Incomplete;
+		var byteIndex = 0;
 
 		while (input.hasByte())
 		{
 			var byte : Int = input.readByte();
 
-			varInt = Int64.add(varInt, Int64.ofInt(byte & ~(1 << 7)));
+			varInt = Int64.add(varInt, Int64.shl(Int64.ofInt(byte & ~(1 << 7)), byteIndex * 7));
 
 			if ((byte & (1 << 7)) == 0)
 			{
@@ -157,7 +158,7 @@ class FieldDataReader
 				break;
 			}
 
-			varInt = Int64.shl(varInt, 7);
+			byteIndex++;
 		}
 
 		return result;

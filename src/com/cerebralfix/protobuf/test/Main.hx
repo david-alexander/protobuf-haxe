@@ -16,13 +16,30 @@
 package com.cerebralfix.protobuf.test;
 
 import com.cerebralfix.protobuf.utilities.BytesReader;
+import cpp.io.File;
 import haxe.io.Bytes;
 
 class Main
 {
 	public static function main():Void
 	{
-		var message:TestMessage = new TestMessage();
-		message.readMessageFields(new BytesReader(Bytes.alloc(0)));
+		if (Sys.args().length > 0)
+		{
+			var filename = Sys.args()[0];
+			var file = File.read(filename);
+
+			var bytes = file.readAll();
+			var bytesReader = new BytesReader(bytes);
+
+			var message = new TestMessage();
+			message.initializeMessageFields(); // TODO: Make the initialisation happen automatically.
+			message.readMessageFields(bytesReader);
+
+			trace(message.testField14._string);
+		}
+		else
+		{
+			trace("No command-line arguments given.");
+		}
 	}
 }

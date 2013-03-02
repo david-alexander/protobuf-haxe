@@ -68,6 +68,8 @@ class MessageBuilder
 				{
 					var fieldData = FieldDataReader.readFieldData(input);
 
+					trace("FieldDataReader.readFieldData returned " + Std.string(fieldData));
+
 					switch (fieldData.data)
 					{
 						case Incomplete:
