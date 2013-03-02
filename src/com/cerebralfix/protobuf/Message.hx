@@ -15,6 +15,8 @@
 
 package com.cerebralfix.protobuf;
 
+import com.cerebralfix.protobuf.utilities.BytesReader;
+
 @:autoBuild(com.cerebralfix.protobuf.MessageBuilder.build()) interface Message
 {
 	function initializeMessageFields():Void;

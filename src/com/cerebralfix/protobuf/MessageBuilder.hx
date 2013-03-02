@@ -58,7 +58,7 @@ class MessageBuilder
 		var readBlock = expr(ExprDef.EBlock(readExprs));
 
 		var initFunc = functionFieldFromExpression(macro function initializeMessageFields():Void { $initBlock; } );
-		var readFunc = functionFieldFromExpression(macro function readMessageFields(input:BytesReader):Void { $readBlock; } );
+		var readFunc = functionFieldFromExpression(macro function readMessageFields(input:com.cerebralfix.protobuf.utilities.BytesReader):Void { $readBlock; } );
 
 		return fields.concat([initFunc, readFunc]);
 	}
