@@ -15,20 +15,8 @@
 
 package com.cerebralfix.protobuf;
 
-@:autoBuild(com.cerebralfix.protobuf.MessageBuilder.build()) class Message
+@:autoBuild(com.cerebralfix.protobuf.MessageBuilder.build()) interface Message
 {
-	public function new()
-	{
-		this.initializeMessageFields();
-	}
-
-	private function initializeMessageFields():Void
-	{
-
-	}
-
-	private function readMessageFields(input:BytesReader):Void
-	{
-
-	}
+	function initializeMessageFields():Void;
+	function readMessageFields(input:BytesReader):Void;
 }

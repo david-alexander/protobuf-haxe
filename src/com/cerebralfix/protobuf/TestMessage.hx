@@ -15,12 +15,12 @@
 
 package com.cerebralfix.protobuf;
 
-class TestMessage extends com.cerebralfix.protobuf.Message
+class TestMessage implements com.cerebralfix.protobuf.Message
 {
 	public var testField:UInt32Field;
 
 	public function new()
 	{
-		super();
+
 	}
 }

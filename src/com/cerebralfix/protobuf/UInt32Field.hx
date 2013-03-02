@@ -15,7 +15,15 @@
 
 package com.cerebralfix.protobuf;
 
-class UInt32Field extends Field
+class UInt32Field implements Field
 {
-	
+	public inline function new()
+	{
+
+	}
+
+	public inline function readFrom(input:BytesReader):Void
+	{
+		
+	}
 }

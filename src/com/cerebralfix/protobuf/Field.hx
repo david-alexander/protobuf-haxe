@@ -15,15 +15,7 @@
 
 package com.cerebralfix.protobuf;
 
-class Field
+interface Field
 {
-	public function new()
-	{
-
-	}
-
-	public function readFrom(input:BytesReader):Void
-	{
-		
-	}
+	function readFrom(input:BytesReader):Void;
 }

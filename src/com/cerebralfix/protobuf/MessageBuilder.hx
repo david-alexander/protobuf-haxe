@@ -25,7 +25,7 @@ class MessageBuilder
 	{
 		var fields = Context.getBuildFields();
 
-		var fieldBaseClass = getFieldBaseClass();
+		var fieldInterface = getFieldInterface();
 
 		var initExprs = new Array<Expr>();
 		var readExprs = new Array<Expr>();
@@ -40,7 +40,7 @@ class MessageBuilder
 					{
 						case TInst(classTypeRef, typeParams):
 						{
-							if (hasBaseClass(classTypeRef.get(), fieldBaseClass))
+							if (implementsInterface(classTypeRef.get(), fieldInterface))
 							{
 								addField(complexType, field.name, initExprs, readExprs);
 							}
@@ -86,27 +86,25 @@ class MessageBuilder
 		}
 	}
 
-	private static function hasBaseClass(t:ClassType, baseClass:ClassType):Bool
+	private static function implementsInterface(t:ClassType, targetInterface:ClassType):Bool
 	{
-		var currentClass = t;
-
-		while (currentClass.superClass != null)
+		for (implementedInterfaceRef in t.interfaces)
 		{
-			var superClass = currentClass.superClass.t.get();
-
-			// TODO: Compare the actual types rather than their names.
-			if (superClass.name == baseClass.name)
+			if (implementedInterfaceRef.t.get().name == targetInterface.name)
 			{
 				return true;
 			}
+		}
 
-			currentClass = superClass;
+		if (t.superClass != null && implementsInterface(t.superClass.t.get(), targetInterface))
+		{
+			return true;
 		}
 
 		return false;
 	}
 
-	private static function getFieldBaseClass():ClassType
+	private static function getFieldInterface():ClassType
 	{
 		switch (resolveComplexType(macro : com.cerebralfix.protobuf.Field))
 		{
@@ -127,7 +125,7 @@ class MessageBuilder
 		switch (expr.expr) {
 			case EFunction(name, f):
 			{
-				return { pos: Context.currentPos(), name: name, meta: [], kind: FFun(f), doc: null, access: [APrivate, AOverride] };
+				return { pos: Context.currentPos(), name: name, meta: [], kind: FFun(f), doc: null, access: [APublic, AInline] };
 			}
 
 			default:
