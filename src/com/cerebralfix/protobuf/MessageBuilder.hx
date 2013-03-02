@@ -28,7 +28,7 @@ class MessageBuilder
 		var fieldInterface = getFieldInterface();
 
 		var initExprs = new Array<Expr>();
-		var readExprs = new Array<Expr>();
+		var readCases = new Array<{ values : Array<Expr>, expr : Expr }>();
 
 		for (field in fields)
 		{
@@ -42,7 +42,7 @@ class MessageBuilder
 						{
 							if (implementsInterface(classTypeRef.get(), fieldInterface))
 							{
-								addField(complexType, field.name, initExprs, readExprs);
+								addField(field, complexType, classTypeRef.get(), field.name, initExprs, readCases);
 							}
 						}
 
@@ -55,28 +55,64 @@ class MessageBuilder
 		}
 
 		var initBlock = expr(ExprDef.EBlock(initExprs));
-		var readBlock = expr(ExprDef.EBlock(readExprs));
+
+		var readSwitch = expr(ExprDef.ESwitch(macro fieldData.fieldNumber, readCases, null));
 
 		var initFunc = functionFieldFromExpression(macro function initializeMessageFields():Void { $initBlock; } );
-		var readFunc = functionFieldFromExpression(macro function readMessageFields(input:com.cerebralfix.protobuf.utilities.BytesReader):Void { $readBlock; } );
+		var readFunc = functionFieldFromExpression(
+			macro function readMessageFields(input:com.cerebralfix.protobuf.utilities.BytesReader):Bool {
+
+				var result = true;
+
+				while (input.hasByte())
+				{
+					var fieldData = FieldDataReader.readFieldData(input);
+
+					switch (fieldData.data)
+					{
+						case Incomplete:
+						{
+							result = false;
+						}
+
+						default:
+						{
+							$readSwitch;
+						}
+					}
+				}
+
+				// TODO: This currently returns true as long as the buffer doesn't end in the middle of a field.
+				//       It doesn't necessarily mean you've got the entire packet.
+				//       A length prefix may be needed (as in the C# version - see http://stackoverflow.com/questions/586819/how-to-detect-when-a-protocol-buffer-message-is-fully-received).
+				return result;
+			}
+		);
 
 		return fields.concat([initFunc, readFunc]);
 	}
 
-	private static function addField(fieldType : ComplexType, fieldName : String, initExprs : Array<Expr>, readExprs : Array<Expr>) : Void
+	private static function addField(field : Field, fieldType : ComplexType, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<{ values : Array<Expr>, expr : Expr }>) : Void
 	{
 		switch (fieldType)
 		{
 			case TPath(fieldTypePath):
 			{
+				var metadata = getMetadataForMessageField(field);
+
 				var fieldExpr = expr(ExprDef.EConst(Constant.CIdent(fieldName)));
 				var newExpr = expr(ExprDef.ENew(fieldTypePath, []));
 
 				var initExpr = macro $fieldExpr = $newExpr;
-				//var readExpr = macro $fieldExpr.readFrom(input);
+
+				var readCase =
+					{
+						values: [expr(EConst(CInt(Std.string(metadata.fieldNumber))))],
+						expr: macro $fieldExpr.readFrom(fieldData.data)
+					};
 
 				initExprs.push(initExpr);
-				//readExprs.push(readExpr);
+				readCases.push(readCase);
 			}
 
 			default:
@@ -133,6 +169,37 @@ class MessageBuilder
 				return null;
 			}
 		}
+	}
+
+	private static function getMetadataForMessageField(field:Field):{fieldNumber : Int}
+	{
+		var fieldNumber = -1; // TODO: Use a proper error value.
+
+		for (entry in field.meta)
+		{
+			if (entry.name == ":fieldNumber" && entry.params.length > 0)
+			{
+				switch (entry.params[0].expr)
+				{
+					case EConst(c):
+					{
+						switch (c)
+						{
+							case CInt(value):
+							{
+								fieldNumber = Std.parseInt(value);
+							}
+
+							default: {}
+						}
+					}
+
+					default: {}
+				}
+			}
+		}
+
+		return {fieldNumber: fieldNumber};
 	}
 
 	// From http://en.usenet.digipedia.org/thread/14424/1626/

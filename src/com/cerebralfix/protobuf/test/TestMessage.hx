@@ -34,22 +34,22 @@ import com.cerebralfix.protobuf.fieldtypes.UInt64Field;
 
 class TestMessage implements com.cerebralfix.protobuf.Message
 {
-	public var testField1:BoolField;
-	public var testField2:BytesField;
-	public var testField3:DoubleField;
-	//public var testField4:EnumField;
-	public var testField5:Fixed32Field;
-	public var testField6:Fixed64Field;
-	public var testField7:FloatField;
-	public var testField8:Int32Field;
-	public var testField9:Int64Field;
-	public var testField10:SFixed32Field;
-	public var testField11:SFixed64Field;
-	public var testField12:SInt32Field;
-	public var testField13:SInt64Field;
-	public var testField14:StringField;
-	public var testField15:UInt32Field;
-	public var testField16:UInt64Field;
+	@:fieldNumber(1) public var testField1:BoolField;
+	@:fieldNumber(2) public var testField2:BytesField;
+	@:fieldNumber(3) public var testField3:DoubleField;
+	//@:fieldNumber(4) public var testField4:EnumField;
+	@:fieldNumber(5) public var testField5:Fixed32Field;
+	@:fieldNumber(6) public var testField6:Fixed64Field;
+	@:fieldNumber(7) public var testField7:FloatField;
+	@:fieldNumber(8) public var testField8:Int32Field;
+	@:fieldNumber(9) public var testField9:Int64Field;
+	@:fieldNumber(10) public var testField10:SFixed32Field;
+	@:fieldNumber(11) public var testField11:SFixed64Field;
+	@:fieldNumber(12) public var testField12:SInt32Field;
+	@:fieldNumber(13) public var testField13:SInt64Field;
+	@:fieldNumber(14) public var testField14:StringField;
+	@:fieldNumber(15) public var testField15:UInt32Field;
+	@:fieldNumber(16) public var testField16:UInt64Field;
 
 	public function new()
 	{

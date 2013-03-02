@@ -20,11 +20,11 @@ import haxe.io.Bytes;
 
 enum ReadVarIntResult
 {
-	VarInt(value : Int);
+	VarInt(value : Int64);
 	Incomplete;
 }
 
-typedef ProtobufInput = com.cerebralfix.protobuf.BytesReader;
+typedef ProtobufInput = com.cerebralfix.protobuf.utilities.BytesReader;
 
 class FieldDataReader
 {
@@ -34,12 +34,13 @@ class FieldDataReader
 		{
 			case Incomplete:
 				// TODO: Use an enum for the result of readFieldData.
-				{fieldNumber: 0, data: FieldData.Incomplete};
+				{fieldNumber: -1, data: FieldData.Incomplete};
 
 			case VarInt(key):
 			{
-				var fieldNumber = key >> 3;
-				var wireType = key & ((1 << 3) - 1);
+				var keyAs32Bits = Int64.toInt(key);
+				var fieldNumber = keyAs32Bits >> 3;
+				var wireType = keyAs32Bits & ((1 << 3) - 1);
 
 				var data = switch (wireType) {
 					case 0:
@@ -100,16 +101,16 @@ class FieldDataReader
 
 		if (input.bytesAvailable() >= 8)
 		{
-			var b1:Int64 = input.readByte();
-			var b2:Int64 = input.readByte();
-			var b3:Int64 = input.readByte();
-			var b4:Int64 = input.readByte();
-			var b5:Int64 = input.readByte();
-			var b6:Int64 = input.readByte();
-			var b7:Int64 = input.readByte();
-			var b8:Int64 = input.readByte();
+			var b1:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 56);
+			var b2:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 48);
+			var b3:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 40);
+			var b4:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 32);
+			var b5:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 24);
+			var b6:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 16);
+			var b7:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 8);
+			var b8:Int64 = Int64.shl(Int64.ofInt(input.readByte()), 0);
 
-			result = FieldData.SixtyFourBit((b1 << 56) | (b2 << 48) | (b2 << 40) | (b3 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | (b8 << 0));
+			result = FieldData.SixtyFourBit(Int64.add(b1, Int64.add(b2, Int64.add(b3, Int64.add(b4, Int64.add(b5, Int64.add(b6, Int64.add(b7, b8))))))));
 		}
 
 		return result;
@@ -126,9 +127,10 @@ class FieldDataReader
 
 			case VarInt(length):
 			{
-				if (input.bytesAvailable() >= length)
+				var lengthAs32Bit = Int64.toInt(length);
+				if (input.bytesAvailable() >= lengthAs32Bit)
 				{
-					var bytes = Bytes.alloc(length);
+					var bytes = Bytes.alloc(lengthAs32Bit);
 					input.fillByteArray(bytes);
 					result = FieldData.LengthDelimited(bytes);
 				}
@@ -140,14 +142,14 @@ class FieldDataReader
 
 	private static inline function readVarInt(input : ProtobufInput) : ReadVarIntResult
 	{
-		var varInt:Int64 = 0;
+		var varInt:Int64 = Int64.ofInt(0);
 		var result = ReadVarIntResult.Incomplete;
 
 		while (input.hasByte())
 		{
 			var byte : Int = input.readByte();
 
-			varInt += byte & ~(1 << 7);
+			varInt = Int64.add(varInt, Int64.ofInt(byte & ~(1 << 7)));
 
 			if ((byte & (1 << 7)) == 0)
 			{
@@ -155,7 +157,7 @@ class FieldDataReader
 				break;
 			}
 
-			varInt << 7;
+			varInt = Int64.shl(varInt, 7);
 		}
 
 		return result;

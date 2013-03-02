@@ -15,10 +15,14 @@
 
 package com.cerebralfix.protobuf.test;
 
+import com.cerebralfix.protobuf.utilities.BytesReader;
+import haxe.io.Bytes;
+
 class Main
 {
 	public static function main():Void
 	{
 		var message:TestMessage = new TestMessage();
+		message.readMessageFields(new BytesReader(Bytes.alloc(0)));
 	}
 }
