@@ -1,0 +1,3 @@
+-cpp ..\build\cpp
+-debug
+-main com.cerebralfix.protobuf.test.Main
