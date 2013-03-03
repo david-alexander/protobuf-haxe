@@ -16,7 +16,7 @@
 package com.cerebralfix.protobuf.test;
 
 import com.cerebralfix.protobuf.utilities.BytesReader;
-import cpp.io.File;
+import sys.io.File;
 import haxe.io.Bytes;
 
 class Main

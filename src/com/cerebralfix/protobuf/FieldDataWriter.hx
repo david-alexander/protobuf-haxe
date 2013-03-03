@@ -68,7 +68,7 @@ class FieldDataWriter
 	// TOOD: Check endianness.
 	private static inline function writeFieldData32Bit(output : ProtobufOutput, value : Int) : Void
 	{
-		output.writeInt32(Int32.ofInt(value));
+		output.writeInt32(value);
 	}
 
 	// TOOD: Check endianness.

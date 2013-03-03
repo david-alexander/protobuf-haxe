@@ -21,29 +21,30 @@ import haxe.macro.Type;
 
 class MessageBuilder
 {
-	@:macro public static function build() : Array<Field>
+	public macro static function build() : Array<Field>
 	{
 		var fields = Context.getBuildFields();
 
 		var fieldInterface = getFieldInterface();
 
 		var initExprs = new Array<Expr>();
-		var readCases = new Array<{ values : Array<Expr>, expr : Expr }>();
+		var readCases = new Array<Case>();
 		var writeExprs = new Array<Expr>();
 
 		for (field in fields)
 		{
 			switch (field.kind)
 			{
-				case FVar(complexType, expr): // TODO: Support properties.
+				case FVar(complexType, _): // TODO: Support properties.
 				{
 					switch (resolveComplexType(complexType))
 					{
-						case TInst(classTypeRef, typeParams):
+						case TInst(classTypeRef, _):
 						{
 							if (implementsInterface(classTypeRef.get(), fieldInterface))
 							{
-								addField(field, complexType, classTypeRef.get(), field.name, initExprs, readCases, writeExprs);
+								// TODO: Pass the correct type parameters.
+								addField(field, complexType, [], classTypeRef.get(), field.name, initExprs, readCases, writeExprs);
 							}
 						}
 
@@ -102,30 +103,32 @@ class MessageBuilder
 		return fields.concat([initFunc, readFunc, writeFunc]);
 	}
 
-	private static function addField(field : Field, fieldType : ComplexType, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<{ values : Array<Expr>, expr : Expr }>, writeExprs : Array<Expr>) : Void
+	private static function addField(field : Field, fieldType : ComplexType, typeParams: Array<Expr>, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<Case>, writeExprs : Array<Expr>) : Void
 	{
 		switch (fieldType)
 		{
 			case TPath(fieldTypePath):
 			{
 				var metadata = getMetadataForMessageField(field);
+				var fieldNumberExpr = expr(EConst(CInt(Std.string(metadata.fieldNumber))));
 
 				var fieldExpr = expr(ExprDef.EConst(Constant.CIdent(fieldName)));
-				var newExpr = expr(ExprDef.ENew(fieldTypePath, []));
+				var newExpr = expr(ExprDef.ENew(fieldTypePath, typeParams));
 
 				var initExpr = macro $fieldExpr = $newExpr;
 
 				var readCase =
 					{
-						values: [expr(EConst(CInt(Std.string(metadata.fieldNumber))))],
+						values: [fieldNumberExpr],
+						guard: null,
 						expr: macro $fieldExpr.readFrom(fieldData.data)
 					};
 
 				var writeExpr = macro {
 					for (fieldData in $fieldExpr.write())
 					{
-						trace("Writing data for field " + Std.string($(metadata.fieldNumber)));
-						FieldDataWriter.writeFieldData(output, $(metadata.fieldNumber), fieldData);
+						trace("Writing data for field " + Std.string($fieldNumberExpr));
+						FieldDataWriter.writeFieldData(output, $fieldNumberExpr, fieldData);
 					}
 				};
 
@@ -163,7 +166,7 @@ class MessageBuilder
 	{
 		switch (resolveComplexType(macro : com.cerebralfix.protobuf.Field))
 		{
-			case TInst(classTypeRef, typeParams):
+			case TInst(classTypeRef, _):
 			{
 				return classTypeRef.get();
 			}
@@ -180,7 +183,7 @@ class MessageBuilder
 		switch (expr.expr) {
 			case EFunction(name, f):
 			{
-				return { pos: Context.currentPos(), name: name, meta: [], kind: FFun(f), doc: null, access: [APublic, AInline] };
+				return { pos: getPosition(), name: name, meta: [], kind: FFun(f), doc: null, access: [APublic, AInline] };
 			}
 
 			default:
@@ -221,6 +224,13 @@ class MessageBuilder
 		return {fieldNumber: fieldNumber};
 	}
 
+	// TODO: Figure out why Context.currentPos() doesn't return the right thing.
+	private static function getPosition():Position
+	{
+		//var currentPos = Context.currentPos();
+		return Context.makePosition({min: 0, max: 0, file: ""});
+	}
+
 	// From http://en.usenet.digipedia.org/thread/14424/1626/
 	private static function resolveComplexType(t:ComplexType):Type
 	{
@@ -235,6 +245,6 @@ class MessageBuilder
 	private static function expr(e:ExprDef):Expr
 	{
 		// TODO: Use the position of the existing field, where applicable.
-		return { expr:e, pos: Context.currentPos() };
+		return { expr:e, pos: getPosition() };
 	}
 }
