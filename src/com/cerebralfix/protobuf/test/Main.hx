@@ -26,7 +26,7 @@ class Main
 		if (Sys.args().length > 0)
 		{
 			var filename = Sys.args()[0];
-			var file = File.read(filename);
+			var file = File.read(filename, true);
 
 			var bytes = file.readAll();
 			var bytesReader = new BytesReader(bytes);
@@ -36,6 +36,9 @@ class Main
 			message.readMessageFields(bytesReader);
 
 			trace(message.testField14._string);
+
+			var outFile = File.write(filename + ".out", true);
+			message.writeMessageFields(outFile);
 		}
 		else
 		{

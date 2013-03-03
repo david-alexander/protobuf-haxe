@@ -29,6 +29,7 @@ class MessageBuilder
 
 		var initExprs = new Array<Expr>();
 		var readCases = new Array<{ values : Array<Expr>, expr : Expr }>();
+		var writeExprs = new Array<Expr>();
 
 		for (field in fields)
 		{
@@ -42,7 +43,7 @@ class MessageBuilder
 						{
 							if (implementsInterface(classTypeRef.get(), fieldInterface))
 							{
-								addField(field, complexType, classTypeRef.get(), field.name, initExprs, readCases);
+								addField(field, complexType, classTypeRef.get(), field.name, initExprs, readCases, writeExprs);
 							}
 						}
 
@@ -55,10 +56,11 @@ class MessageBuilder
 		}
 
 		var initBlock = expr(ExprDef.EBlock(initExprs));
-
 		var readSwitch = expr(ExprDef.ESwitch(macro fieldData.fieldNumber, readCases, null));
+		var writeBlock = expr(ExprDef.EBlock(writeExprs));
 
 		var initFunc = functionFieldFromExpression(macro function initializeMessageFields():Void { $initBlock; } );
+
 		var readFunc = functionFieldFromExpression(
 			macro function readMessageFields(input:com.cerebralfix.protobuf.utilities.BytesReader):Bool {
 
@@ -91,10 +93,16 @@ class MessageBuilder
 			}
 		);
 
-		return fields.concat([initFunc, readFunc]);
+		var writeFunc = functionFieldFromExpression(
+			macro function writeMessageFields(output:haxe.io.Output):Void {
+				$writeBlock;
+			}
+		);
+
+		return fields.concat([initFunc, readFunc, writeFunc]);
 	}
 
-	private static function addField(field : Field, fieldType : ComplexType, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<{ values : Array<Expr>, expr : Expr }>) : Void
+	private static function addField(field : Field, fieldType : ComplexType, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<{ values : Array<Expr>, expr : Expr }>, writeExprs : Array<Expr>) : Void
 	{
 		switch (fieldType)
 		{
@@ -113,8 +121,17 @@ class MessageBuilder
 						expr: macro $fieldExpr.readFrom(fieldData.data)
 					};
 
+				var writeExpr = macro {
+					for (fieldData in $fieldExpr.write())
+					{
+						trace("Writing data for field " + Std.string($(metadata.fieldNumber)));
+						FieldDataWriter.writeFieldData(output, $(metadata.fieldNumber), fieldData);
+					}
+				};
+
 				initExprs.push(initExpr);
 				readCases.push(readCase);
+				writeExprs.push(writeExpr);
 			}
 
 			default:

@@ -38,4 +38,16 @@ class Fixed64Field implements Field
 			default: {}
 		}
 	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [SixtyFourBit(_value)];
+		}
+		else
+		{
+			return [];
+		}
+	}
 }

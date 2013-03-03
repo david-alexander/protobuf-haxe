@@ -19,7 +19,7 @@ import haxe.Int64;
 
 class EnumField<T> implements Field
 {
-	public var _value:T;
+	public var _value:Null<T>;
 
 	public inline function new()
 	{
@@ -36,6 +36,19 @@ class EnumField<T> implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			// TODO
+			return [];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

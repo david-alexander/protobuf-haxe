@@ -22,7 +22,7 @@ import haxe.io.BytesOutput;
 
 class FloatField implements Field
 {
-	public var _value:Float;
+	public var _value:Null<Float>;
 
 	public inline function new()
 	{
@@ -45,6 +45,23 @@ class FloatField implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			var bytesOutput = new BytesOutput();
+			bytesOutput.writeFloat(_value);
+			var bytes = bytesOutput.getBytes();
+			var bytesInput = new BytesInput(bytes, 0, bytes.length);
+
+			return [ThirtyTwoBit(Int32.toInt(bytesInput.readInt32()))];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

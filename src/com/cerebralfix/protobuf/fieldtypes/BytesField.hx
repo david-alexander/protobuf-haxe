@@ -39,4 +39,16 @@ class BytesField implements Field
 			default: {}
 		}
 	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_bytes != null)
+		{
+			return [LengthDelimited(_bytes)];
+		}
+		else
+		{
+			return [];
+		}
+	}
 }

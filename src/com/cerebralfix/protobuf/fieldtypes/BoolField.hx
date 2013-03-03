@@ -19,7 +19,7 @@ import haxe.Int64;
 
 class BoolField implements Field
 {
-	public var _value:Bool;
+	public var _value:Null<Bool>;
 
 	public inline function new()
 	{
@@ -36,6 +36,18 @@ class BoolField implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [VarInt(Int64.ofInt(_value ? 1 : 0))];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

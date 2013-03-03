@@ -22,7 +22,7 @@ import haxe.io.BytesOutput;
 
 class DoubleField implements Field
 {
-	public var _value:Float;
+	public var _value:Null<Float>;
 
 	public inline function new()
 	{
@@ -53,6 +53,34 @@ class DoubleField implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			var bytesOutput = new BytesOutput();
+			bytesOutput.writeDouble(_value);
+			var bytes = bytesOutput.getBytes();
+			var bytesInput = new BytesInput(bytes, 0, bytes.length);
+
+			var result = Int64.ofInt(0);
+
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 56));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 48));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 40));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 32));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 24));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 16));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 8));
+			result = Int64.or(result, Int64.shl(Int64.ofInt(bytesInput.readByte()), 0));
+
+			return [SixtyFourBit(result)];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

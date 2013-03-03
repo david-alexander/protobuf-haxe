@@ -15,6 +15,8 @@
 
 package com.cerebralfix.protobuf.fieldtypes;
 
+import haxe.io.Bytes;
+
 class StringField implements Field
 {
 	public var _string:String;
@@ -34,6 +36,18 @@ class StringField implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_string != null)
+		{
+			return [LengthDelimited(Bytes.ofString(_string))];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

@@ -18,4 +18,5 @@ package com.cerebralfix.protobuf;
 interface Field
 {
 	function readFrom(data:FieldData):Void;
+	function write():Array<FieldData>;
 }

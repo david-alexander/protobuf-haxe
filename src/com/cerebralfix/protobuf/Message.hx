@@ -16,9 +16,11 @@
 package com.cerebralfix.protobuf;
 
 import com.cerebralfix.protobuf.utilities.BytesReader;
+import haxe.io.Output;
 
 @:autoBuild(com.cerebralfix.protobuf.MessageBuilder.build()) interface Message
 {
 	function initializeMessageFields():Void;
 	function readMessageFields(input:BytesReader):Bool;
+	function writeMessageFields(input:Output):Void;
 }

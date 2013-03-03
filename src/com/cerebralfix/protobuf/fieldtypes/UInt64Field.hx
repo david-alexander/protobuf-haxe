@@ -38,4 +38,16 @@ class UInt64Field implements Field
 			default: {}
 		}
 	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [VarInt(_value)];
+		}
+		else
+		{
+			return [];
+		}
+	}
 }

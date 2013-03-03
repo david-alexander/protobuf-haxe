@@ -17,7 +17,7 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 class Fixed32Field implements Field
 {
-	public var _value:Int;
+	public var _value:Null<Int>;
 
 	public inline function new()
 	{
@@ -34,6 +34,18 @@ class Fixed32Field implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [ThirtyTwoBit(_value)];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

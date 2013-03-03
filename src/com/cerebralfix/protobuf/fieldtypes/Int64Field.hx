@@ -19,7 +19,7 @@ import haxe.Int64;
 
 class Int64Field implements Field
 {
-	public var _value:Int;
+	public var _value:Int64;
 
 	public inline function new()
 	{
@@ -32,10 +32,22 @@ class Int64Field implements Field
 		{
 			case VarInt(value):
 			{
-				_value = Int64.toInt(value);
+				_value = value;
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [VarInt(_value)];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }

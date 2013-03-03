@@ -39,4 +39,16 @@ class SInt64Field implements Field
 			default: {}
 		}
 	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [VarInt(Int64.xor(Int64.shl(_value, 1), Int64.shr(_value, 31)))];
+		}
+		else
+		{
+			return [];
+		}
+	}
 }

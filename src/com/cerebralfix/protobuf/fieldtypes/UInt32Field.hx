@@ -19,7 +19,7 @@ import haxe.Int64;
 
 class UInt32Field implements Field
 {
-	public var _value:Int;
+	public var _value:Null<Int>;
 
 	public inline function new()
 	{
@@ -36,6 +36,18 @@ class UInt32Field implements Field
 			}
 
 			default: {}
+		}
+	}
+
+	public inline function write():Array<FieldData>
+	{
+		if (_value != null)
+		{
+			return [VarInt(Int64.ofInt(_value))];
+		}
+		else
+		{
+			return [];
 		}
 	}
 }
