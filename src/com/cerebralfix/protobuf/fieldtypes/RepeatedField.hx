@@ -63,12 +63,10 @@ package com.cerebralfix.protobuf.fieldtypes;
 		_fields.push(field);
 	}
 
-/*
 	@:generic public inline function newEntry():TField
 	{
 		var field = new TField();
 		_fields.push(field);
 		return field;
 	}
-	*/
 }
