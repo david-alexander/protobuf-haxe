@@ -36,7 +36,7 @@ class FloatField implements Field
 			case ThirtyTwoBit(value):
 			{
 				var bytesOutput = new BytesOutput();
-				bytesOutput.writeInt32(Int32.ofInt(value));
+				bytesOutput.writeInt32(value);
 
 				var bytes = bytesOutput.getBytes();
 
@@ -57,11 +57,16 @@ class FloatField implements Field
 			var bytes = bytesOutput.getBytes();
 			var bytesInput = new BytesInput(bytes, 0, bytes.length);
 
-			return [ThirtyTwoBit(Int32.toInt(bytesInput.readInt32()))];
+			return [ThirtyTwoBit(bytesInput.readInt32())];
 		}
 		else
 		{
 			return [];
 		}
+	}
+
+	public inline function isSet():Bool
+	{
+		return _value != null;
 	}
 }

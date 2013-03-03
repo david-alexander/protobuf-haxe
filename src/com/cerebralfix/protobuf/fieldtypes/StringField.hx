@@ -50,4 +50,9 @@ class StringField implements Field
 			return [];
 		}
 	}
+
+	public inline function isSet():Bool
+	{
+		return _string != null;
+	}
 }

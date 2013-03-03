@@ -19,4 +19,5 @@ interface Field
 {
 	function readFrom(data:FieldData):Void;
 	function write():Array<FieldData>;
+	function isSet():Bool;
 }

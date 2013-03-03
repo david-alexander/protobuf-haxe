@@ -50,4 +50,9 @@ class UInt64Field implements Field
 			return [];
 		}
 	}
+
+	public inline function isSet():Bool
+	{
+		return _value != null;
+	}
 }

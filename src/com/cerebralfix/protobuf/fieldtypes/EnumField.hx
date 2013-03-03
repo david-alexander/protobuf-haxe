@@ -30,7 +30,7 @@ class EnumField<T> implements Field
 	{
 		switch (data)
 		{
-			case VarInt(value):
+			case VarInt(_):
 			{
 				// TODO
 			}
@@ -50,5 +50,10 @@ class EnumField<T> implements Field
 		{
 			return [];
 		}
+	}
+
+	public inline function isSet():Bool
+	{
+		return _value != null;
 	}
 }

@@ -51,4 +51,9 @@ class BytesField implements Field
 			return [];
 		}
 	}
+
+	public inline function isSet():Bool
+	{
+		return _bytes != null;
+	}
 }

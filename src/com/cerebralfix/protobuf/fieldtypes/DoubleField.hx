@@ -83,4 +83,9 @@ class DoubleField implements Field
 			return [];
 		}
 	}
+
+	public inline function isSet():Bool
+	{
+		return _value != null;
+	}
 }
