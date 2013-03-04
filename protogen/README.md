@@ -1,7 +1,7 @@
 ProtoC Plugin for Haxe
 ======================
 
-This is a Haxe generator plugin for ProtoC. To use it, first [download the Protobuf ssource][https://code.google.com/p/protobuf/downloads/list], and then follow these steps:
+This is a Haxe generator plugin for ProtoC. To use it, first <a href="https://code.google.com/p/protobuf/downloads/list">download the Protobuf source</a>, and then follow these steps:
 
 * Copy the `haxe` directory (inside this directory) into `src/google/protobuf/compiler` (inside the Protobuf source tree).
 * Add the files from the `haxe` directory to the build. (For MSVC, this means adding them to `vsprojects/libprotoc.vcproj`.)
