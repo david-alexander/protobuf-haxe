@@ -8,4 +8,6 @@ REM This is a hack to get around an issue (seems to be a bug in HXCPP) where an 
 >> .\src\com\cerebralfix\protobuf\fieldtypes\RepeatedField.cpp echo namespace com{ namespace cerebralfix{ namespace protobuf{ namespace fieldtypes{ void RepeatedField_obj::__register() { } void RepeatedField_obj::__boot() { } } } } }
 
 haxelib run hxcpp Build.xml haxe -Dhaxe3="1" -Dhaxe_ver="3."
+if %errorlevel% neq 0 exit /b %errorlevel%
+
 popd
