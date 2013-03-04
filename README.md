@@ -26,7 +26,7 @@ The project is still in the **very early** stages of development, and further in
 * Source code documentation
 * Sample code (e.g. basic chat client/server)
 
-## Known Issues
+### Known Issues
 
 * The `RepeatedField` class seems to be triggering a bug in HXCPP which causes the C++ build to fail. It is currently being worked around using a batch script that deletes the offending C++ code before the C++ compiler is run.
 * Enums are not yet properly implemented, even though the EnumField class exists. Also, the ProtoC generator may not generate valid code for them.
