@@ -15,11 +15,11 @@ The project is still in the **very early** stages of development, and further in
 
 ### To-Do List
 
-* Length-prefixed messages (à la [protobuf-net][https://code.google.com/p/protobuf-net/])
+* Length-prefixed messages (à la <a href="https://code.google.com/p/protobuf-net/">protobuf-net</a>)
 * Messages within messages
 * Type-safe enum fields
 * Utility code for dealing with sockets (synchronous and asynchronous)
-* Utility code for managing [union messages][https://developers.google.com/protocol-buffers/docs/techniques#union], including passing them to appropriate callbacks
+* Utility code for managing <a href="https://developers.google.com/protocol-buffers/docs/techniques#union">union messages</a>, including passing them to appropriate callbacks
 * ProtoC generator
 * Required fields (currently all are considered optional, even if specified as required in the proto file)
 * Unit tests for the library and the ProtoC generator, covering all data types
