@@ -12,7 +12,7 @@ The project is still in the **very early** stages of development, and further in
 * ProtoC generator plugin (see `protogen` directory)
 * Reading and writing from byte arrays
 * All primitive types (not all tested yet - expect some issues with signed vs unsigned integers, endianness, etc.)
-* Repeated fields
+* Repeated fields (non-packed only)
 
 ### To-Do List
 
@@ -22,6 +22,7 @@ The project is still in the **very early** stages of development, and further in
 * Utility code for dealing with sockets (synchronous and asynchronous)
 * Utility code for managing <a href="https://developers.google.com/protocol-buffers/docs/techniques#union">union messages</a>, including passing them to appropriate callbacks
 * Required fields (currently all are considered optional, even if specified as required in the proto file)
+* Packed repeated fields
 * Unit tests for the library and the ProtoC generator, covering all data types
 * Source code documentation
 * Sample code (e.g. basic chat client/server)
