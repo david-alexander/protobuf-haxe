@@ -18,12 +18,12 @@ package com.cerebralfix.protobuf.stream;
 import com.cerebralfix.protobuf.utilities.BytesReader;
 import haxe.io.Bytes;
 
-@:generic class MessageInputStream<TBaseMessage : (Message, {function new():Void;})>
+@:generic class MessageDataDecoder<TBaseMessage : (Message, {function new():Void;})>
 {
 	private var _bytes:Bytes;
-	private static var HEADER_LENGTH:Int = 4;
+	private var HEADER_LENGTH:Int = 4;
 
-	public function new():void
+	public function new():Void
 	{
 
 	}
@@ -60,7 +60,7 @@ import haxe.io.Bytes;
 		if (hasMessage())
 		{
 			var messageLength = getMessageLength();
-			var messageBytes = bytes.sub(HEADER_LENGTH, messageLength);
+			var messageBytes = _bytes.sub(HEADER_LENGTH, messageLength);
 			var message = new TBaseMessage();
 			message.initializeMessageFields();
 			message.readMessageFields(new BytesReader(messageBytes));
@@ -93,7 +93,7 @@ import haxe.io.Bytes;
 		}
 	}
 
-	private static inline function int32AtPosition(bytes:Bytes, pos:Int):Null<Int>
+	private inline function int32AtPosition(bytes:Bytes, pos:Int):Null<Int>
 	{
 		var result:Null<Int> = null;
 

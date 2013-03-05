@@ -15,8 +15,11 @@
 
 package com.cerebralfix.protobuf.test;
 
+import com.cerebralfix.protobuf.stream.MessageDataDecoder;
+import com.cerebralfix.protobuf.stream.MessageDispatcher;
 import com.cerebralfix.protobuf.utilities.BytesReader;
 import sys.io.File;
+import sys.net.Socket;
 import haxe.io.Bytes;
 
 class Main
@@ -40,6 +43,30 @@ class Main
 			var outFile = File.write(filename + ".out", true);
 			message.writeMessageFields(outFile);
 			outFile.close();
+
+			var socket:Socket = new Socket();
+			var decoder = new MessageDataDecoder<BaseMessage>();
+			var dispatcher = new MessageDispatcher<BaseMessage>();
+
+			dispatcher.registerMessageHandler(
+				function(message:ConnectionResponseMessage):Void
+				{
+					trace("TESTING");
+				}
+			);
+
+			while (true)
+			{
+				socket.waitForRead();
+				var bytes = socket.input.read(1);
+				decoder.appendBytes(bytes);
+
+				if (decoder.hasMessage())
+				{
+					var message = decoder.getMessage();
+					dispatcher.dispatchMessage(message);
+				}
+			}
 		}
 		else
 		{

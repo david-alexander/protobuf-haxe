@@ -21,16 +21,16 @@ import haxe.ds.ObjectMap;
 {
 	private var _handlers:ObjectMap<String, Message -> Void>;
 
-	public function new():void
+	public function new():Void
 	{
-		_handlers = new ObjectMap<String, TBaseMessage -> Void>();
+		_handlers = new ObjectMap<String, Message -> Void>();
 	}
 
-	public function registerMessageHandler<TMessage : (Message, {function new():Void;})>(handler : TMessage -> Void):Void
+	@:generic public function registerMessageHandler<TMessage : (Message, {function new():Void;})>(handler : TMessage -> Void):Void
 	{
 		_handlers.set(new TMessage().getMessageTypeId(), function(message:Message):Void
 			{
-				handler(message as TMessage);
+				handler(untyped message);
 			}
 		);
 	}
