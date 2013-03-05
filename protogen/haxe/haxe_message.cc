@@ -41,11 +41,11 @@ namespace {
 string HaxeFieldType(const FieldDescriptor* field)
 {
 	stringstream typeName;
-	typeName << "com.cerebralfix.protobuf.";
+	typeName << "com.cerebralfix.protobuf.fieldtypes.";
 
 	if (field->is_repeated())
 	{
-		typeName << "RepeatedField<";
+		typeName << "RepeatedField<com.cerebralfix.protobuf.fieldtypes.";
 	}
 
 	switch (field->type()) {
