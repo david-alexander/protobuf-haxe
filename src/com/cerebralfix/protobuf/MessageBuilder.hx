@@ -33,7 +33,7 @@ class MessageBuilder
 		var initExprs = new Array<Expr>();
 		var readCases = new Array<Case>();
 		var writeExprs = new Array<Expr>();
-		var submessageIds:ObjectMap<MessageTypeId, Expr> = new ObjectMap<MessageTypeId, Expr>();
+		var submessageExprs = new Array<Expr>();
 
 		for (field in fields)
 		{
@@ -48,7 +48,7 @@ class MessageBuilder
 							if (implementsInterface(classTypeRef.get(), fieldInterface))
 							{
 								// TODO: Pass the correct type parameters.
-								addField(field, complexType, [], classTypeRef.get(), field.name, initExprs, readCases, writeExprs, submessageIds);
+								addField(field, complexType, [], classTypeRef.get(), field.name, initExprs, readCases, writeExprs, submessageExprs);
 							}
 						}
 
@@ -104,28 +104,13 @@ class MessageBuilder
 			}
 		);
 
-		var submessageCases:Array<Case> = [];
-
-		for (messageTypeId in submessageIds.keys())
-		{
-			var fieldExpr:Expr = submessageIds.get(messageTypeId);
-
-			submessageCases.push(
-				{
-					values: [expr(EConst(CString(messageTypeId)))],
-					guard: null,
-					expr: macro return $fieldExpr._message
-				}
-			);
-		}
-
-		var submessageSwitch = expr(ExprDef.ESwitch(macro typeId, submessageCases, macro return null));
+		var submessageBlock = expr(ExprDef.EBlock(submessageExprs));
 
 		var typeFunc = functionFieldFromExpression(macro function getMessageTypeId():com.cerebralfix.protobuf.MessageTypeId { return $v{getMangledName(Context.getLocalClass().get())}; });
 
 		var submessageFunc = functionFieldFromExpression(
-			macro function getSubmessageWithType(typeId:com.cerebralfix.protobuf.MessageTypeId):com.cerebralfix.protobuf.Message {
-				$submessageSwitch;
+			macro function getActiveSubmessage():com.cerebralfix.protobuf.Message {
+				$submessageBlock;
 				return null;
 			}
 		);
@@ -133,7 +118,7 @@ class MessageBuilder
 		return fields.concat([initFunc, readFunc, writeFunc, typeFunc, submessageFunc]);
 	}
 
-	private static function addField(field : Field, fieldType : ComplexType, typeParams: Array<Expr>, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<Case>, writeExprs : Array<Expr>, submessageIds:ObjectMap<MessageTypeId, Expr>) : Void
+	private static function addField(field : Field, fieldType : ComplexType, typeParams: Array<Expr>, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<Case>, writeExprs : Array<Expr>, submessageExprs:Array<Expr>) : Void
 	{
 		switch (fieldType)
 		{
@@ -166,7 +151,7 @@ class MessageBuilder
 				readCases.push(readCase);
 				writeExprs.push(writeExpr);
 
-				checkForSubmessage(fieldClassType, fieldExpr, submessageIds);
+				checkForSubmessage(fieldClassType, fieldExpr, submessageExprs);
 			}
 
 			default:
@@ -176,12 +161,18 @@ class MessageBuilder
 		}
 	}
 
-	private static function checkForSubmessage(fieldClassType : ClassType, fieldExpr:Expr, submessageIds:ObjectMap<MessageTypeId, Expr>):Void
+	private static function checkForSubmessage(fieldClassType : ClassType, fieldExpr:Expr, submessageExprs:Array<Expr>):Void
 	{
 		if (fieldClassType.name.indexOf("MessageField") == 0)
 		{
-			var messageTypeId = fieldClassType.name.substring("MessageField".length);
-			submessageIds.set(messageTypeId, fieldExpr);
+			submessageExprs.push(macro
+				{
+					if ($fieldExpr.isSet())
+					{
+						return $fieldExpr._message;
+					}
+				}
+			);
 		}
 	}
 

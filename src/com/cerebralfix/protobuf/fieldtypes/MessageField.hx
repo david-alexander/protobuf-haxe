@@ -25,8 +25,7 @@ import haxe.io.BytesOutput;
 
 	public inline function new()
 	{
-		_message = new TMessage();
-		_message.initializeMessageFields();
+		
 	}
 
 	public inline function readFrom(data:FieldData):Void
@@ -35,6 +34,8 @@ import haxe.io.BytesOutput;
 		{
 			case LengthDelimited(bytes):
 			{
+				_message = new TMessage();
+				_message.initializeMessageFields();
 				_message.readMessageFields(new BytesReader(bytes));
 			}
 

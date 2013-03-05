@@ -25,5 +25,5 @@ import haxe.io.Output;
 	function writeMessageFields(input:Output):Void;
 
 	function getMessageTypeId():MessageTypeId;
-	function getSubmessageWithType(typeId:MessageTypeId):Message;
+	function getActiveSubmessage():Message;
 }
