@@ -14,13 +14,13 @@ The project is still in the **very early** stages of development, and further in
 * All primitive types (not all tested yet - expect some issues with signed vs unsigned integers, endianness, etc.)
 * Repeated fields (non-packed only)
 * Messages within messages
+* Length-prefixed messages (à la <a href="https://code.google.com/p/protobuf-net/">protobuf-net</a>)
+* Utility code for dealing with sockets (synchronous and asynchronous)
+* Utility code for managing <a href="https://developers.google.com/protocol-buffers/docs/techniques#union">union messages</a>, including passing them to appropriate callbacks
 
 ### To-Do List
 
-* Length-prefixed messages (à la <a href="https://code.google.com/p/protobuf-net/">protobuf-net</a>)
 * Type-safe enum fields
-* Utility code for dealing with sockets (synchronous and asynchronous)
-* Utility code for managing <a href="https://developers.google.com/protocol-buffers/docs/techniques#union">union messages</a>, including passing them to appropriate callbacks
 * Required fields (currently all are considered optional, even if specified as required in the proto file)
 * Packed repeated fields
 * Unit tests for the library and the ProtoC generator, covering all data types
