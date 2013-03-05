@@ -15,58 +15,51 @@
 
 package com.cerebralfix.protobuf.fieldtypes;
 
-@:generic class RepeatedField<TField : (Field, {function new():Void;})> implements Field
+import com.cerebralfix.protobuf.utilities.BytesReader;
+import haxe.io.BytesBuffer;
+import haxe.io.BytesOutput;
+
+@:generic class MessageField<TMessage : (Message, {function new():Void;})> implements Field
 {
-	public var _fields:Array<TField>;
+	public var _message:TMessage;
 
 	public inline function new()
 	{
-		_fields = [];
+		_message = new TMessage();
+		_message.initializeMessageFields();
 	}
 
 	public inline function readFrom(data:FieldData):Void
 	{
-		var field = new TField();
-
-		field.readFrom(data);
-
-		if (field.isSet())
+		switch (data)
 		{
-			_fields.push(field);
+			case LengthDelimited(bytes):
+			{
+				_message.readMessageFields(new BytesReader(bytes));
+			}
+
+			default: {}
 		}
 	}
 
 	public inline function write():Array<FieldData>
 	{
-		var results:Array<FieldData> = [];
-
-		for (field in _fields)
+		if (_message != null)
 		{
-			results = results.concat(field.write());
-		}
+			var output = new BytesOutput();
+			_message.writeMessageFields(output);
+			var bytes = output.getBytes();
 
-		return results;
+			return [LengthDelimited(bytes)];
+		}
+		else
+		{
+			return [];
+		}
 	}
 
 	public inline function isSet():Bool
 	{
-		return true;
-	}
-
-	public inline function get(index:Int):TField
-	{
-		return _fields[index];
-	}
-
-	public inline function push(field:TField):Void
-	{
-		_fields.push(field);
-	}
-
-	@:generic public inline function newEntry():TField
-	{
-		var field = new TField();
-		_fields.push(field);
-		return field;
+		return _message != null;
 	}
 }

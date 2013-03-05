@@ -38,53 +38,51 @@ using internal::WireFormat;
 
 namespace {
 
-const char* HaxeFieldType(const FieldDescriptor* field, bool isInsideRepeatedField = false)
+string HaxeFieldType(const FieldDescriptor* field)
 {
-	if (field->is_repeated() && !isInsideRepeatedField)
-	{
-		return "RepeatedField";
-	}
-	else
-	{
-		switch (field->type()) {
-		case FieldDescriptor::TYPE_DOUBLE	: return "DoubleField";
-		case FieldDescriptor::TYPE_FLOAT	: return "FloatField";          
-		case FieldDescriptor::TYPE_INT64    : return "Int64Field";                       
-		case FieldDescriptor::TYPE_UINT64   : return "UInt64Field";     
-		case FieldDescriptor::TYPE_INT32    : return "Int32Field";             
-		case FieldDescriptor::TYPE_FIXED64  : return "Fixed64Field";
-		case FieldDescriptor::TYPE_FIXED32  : return "Fixed32Field";
-		case FieldDescriptor::TYPE_BOOL		: return "BoolField";
-		case FieldDescriptor::TYPE_STRING	: return "StringField";
-		case FieldDescriptor::TYPE_GROUP	: GOOGLE_LOG(FATAL) << "Groups are not supported in Protobuf-Haxe";
-		case FieldDescriptor::TYPE_MESSAGE	: return "MessageField";
-		case FieldDescriptor::TYPE_BYTES	: return "BytesField";
-		case FieldDescriptor::TYPE_UINT32	: return "UInt32Field";
-		case FieldDescriptor::TYPE_ENUM		: return "EnumField";
-		case FieldDescriptor::TYPE_SFIXED32	: return "SFixed32Field";
-		case FieldDescriptor::TYPE_SFIXED64	: return "SFixed64Field";
-		case FieldDescriptor::TYPE_SINT32	: return "SInt32Field";
-		case FieldDescriptor::TYPE_SINT64	: return "SInt64Field";
-		}
-	}
-	GOOGLE_LOG(FATAL) << "Can't get here.";
-	return NULL;
-}
+	stringstream typeName;
+	typeName << "com.cerebralfix.protobuf.";
 
-const char* HaxeFieldTypeParameter(const FieldDescriptor* field)
-{
 	if (field->is_repeated())
 	{
-		return HaxeFieldType(field, true);
+		typeName << "RepeatedField<";
 	}
-	else
+
+	switch (field->type()) {
+		case FieldDescriptor::TYPE_DOUBLE	: typeName << "DoubleField"; break;
+		case FieldDescriptor::TYPE_FLOAT	: typeName << "FloatField"; break;
+		case FieldDescriptor::TYPE_INT64    : typeName << "Int64Field"; break;
+		case FieldDescriptor::TYPE_UINT64   : typeName << "UInt64Field"; break;
+		case FieldDescriptor::TYPE_INT32    : typeName << "Int32Field"; break;
+		case FieldDescriptor::TYPE_FIXED64  : typeName << "Fixed64Field"; break;
+		case FieldDescriptor::TYPE_FIXED32  : typeName << "Fixed32Field"; break;
+		case FieldDescriptor::TYPE_BOOL		: typeName << "BoolField"; break;
+		case FieldDescriptor::TYPE_STRING	: typeName << "StringField"; break;
+		case FieldDescriptor::TYPE_BYTES	: typeName << "BytesField"; break;
+		case FieldDescriptor::TYPE_UINT32	: typeName << "UInt32Field"; break;
+		case FieldDescriptor::TYPE_SFIXED32	: typeName << "SFixed32Field"; break;
+		case FieldDescriptor::TYPE_SFIXED64	: typeName << "SFixed64Field"; break;
+		case FieldDescriptor::TYPE_SINT32	: typeName << "SInt32Field"; break;
+		case FieldDescriptor::TYPE_SINT64	: typeName << "SInt64Field"; break;
+		case FieldDescriptor::TYPE_MESSAGE:
+			{
+				typeName << "MessageField<" << FileHaxePackage(field->message_type()->file()) << field->message_type()->name() << ">";
+				break;
+			}
+		case FieldDescriptor::TYPE_ENUM:
+			{
+				typeName << "EnumField<" << field->enum_type()->name() << ">";
+				break;
+			}
+		case FieldDescriptor::TYPE_GROUP: GOOGLE_LOG(FATAL) << "Groups are not yet supported in Protobuf-Haxe"; return NULL;
+	}
+
+	if (field->is_repeated())
 	{
-		switch (field->type()) {
-		case FieldDescriptor::TYPE_MESSAGE	: return field->message_type()->name().c_str();
-		case FieldDescriptor::TYPE_ENUM		: return field->enum_type()->name().c_str();
-		}
+		typeName << ">";
 	}
-	return NULL;
+
+	return typeName.str();
 }
 
 void PrintFieldComment(io::Printer* printer, const FieldDescriptor* field) {
@@ -99,8 +97,7 @@ static void GenerateField(io::Printer* printer, const FieldDescriptor* field)
 {
 	PrintFieldComment(printer, field);
 
-	const char* field_type = HaxeFieldType(field);
-	const char* field_type_parameter = HaxeFieldTypeParameter(field);
+	string field_type = HaxeFieldType(field);
 
 	stringstream field_number_string;
 	field_number_string << field->number();
@@ -108,19 +105,9 @@ static void GenerateField(io::Printer* printer, const FieldDescriptor* field)
 	printer->Print("@:fieldNumber($field_number$)\n",
 		"field_number", field_number_string.str());
 
-	if (field_type_parameter == NULL)
-	{
-		printer->Print("public var $field_name$:com.cerebralfix.protobuf.fieldtypes.$field_type$;\n",
-			"field_name", field->name(),
-			"field_type", field_type);
-	}
-	else
-	{
-		printer->Print("public var $field_name$:com.cerebralfix.protobuf.fieldtypes.$field_type$<com.cerebralfix.protobuf.fieldtypes.$field_type_parameter$>;\n",
-			"field_name", field->name(),
-			"field_type", field_type,
-			"field_type_parameter", field_type_parameter);
-	}
+	printer->Print("public var $field_name$:$field_type$;\n",
+		"field_name", field->name(),
+		"field_type", field_type);
 }
 
 }  // namespace

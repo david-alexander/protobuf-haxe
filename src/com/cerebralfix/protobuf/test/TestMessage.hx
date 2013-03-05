@@ -32,6 +32,7 @@ import com.cerebralfix.protobuf.fieldtypes.StringField;
 import com.cerebralfix.protobuf.fieldtypes.UInt32Field;
 import com.cerebralfix.protobuf.fieldtypes.UInt64Field;
 import com.cerebralfix.protobuf.fieldtypes.RepeatedField;
+import com.cerebralfix.protobuf.fieldtypes.MessageField;
 
 class TestMessage implements com.cerebralfix.protobuf.Message
 {
@@ -52,6 +53,7 @@ class TestMessage implements com.cerebralfix.protobuf.Message
 	@:fieldNumber(15) public var testField15:UInt32Field;
 	@:fieldNumber(16) public var testField16:UInt64Field;
 	@:fieldNumber(17) public var testField17:RepeatedField<Int32Field>;
+	@:fieldNumber(18) public var testField18:MessageField<TestMessage2>;
 
 	public function new()
 	{

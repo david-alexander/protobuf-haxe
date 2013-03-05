@@ -13,18 +13,20 @@ The project is still in the **very early** stages of development, and further in
 * Reading and writing from byte arrays
 * All primitive types (not all tested yet - expect some issues with signed vs unsigned integers, endianness, etc.)
 * Repeated fields
+* Messages within messages
 
 ### To-Do List
 
 * Length-prefixed messages (à la <a href="https://code.google.com/p/protobuf-net/">protobuf-net</a>)
-* Messages within messages
 * Type-safe enum fields
 * Utility code for dealing with sockets (synchronous and asynchronous)
 * Utility code for managing <a href="https://developers.google.com/protocol-buffers/docs/techniques#union">union messages</a>, including passing them to appropriate callbacks
 * Required fields (currently all are considered optional, even if specified as required in the proto file)
 * Unit tests for the library and the ProtoC generator, covering all data types
+* Memory pooling of messages
 * Source code documentation
 * Sample code (e.g. basic chat client/server)
+* Support for the now-deprecated "group" field type
 
 ## Known Issues
 

@@ -15,35 +15,14 @@
 
 package com.cerebralfix.protobuf.test;
 
-import com.cerebralfix.protobuf.utilities.BytesReader;
-import sys.io.File;
-import haxe.io.Bytes;
+import com.cerebralfix.protobuf.fieldtypes.Int32Field;
 
-class Main
+class TestMessage2 implements com.cerebralfix.protobuf.Message
 {
-	public static function main():Void
+	@:fieldNumber(1) public var testField1:Int32Field;
+
+	public function new()
 	{
-		if (Sys.args().length > 0)
-		{
-			var filename = Sys.args()[0];
-			var file = File.read(filename, true);
 
-			var bytes = file.readAll();
-			var bytesReader = new BytesReader(bytes);
-
-			var message = new TestMessage();
-			message.initializeMessageFields(); // TODO: Make the initialisation happen automatically.
-			message.readMessageFields(bytesReader);
-
-			trace(message.testField14._string);
-
-			var outFile = File.write(filename + ".out", true);
-			message.writeMessageFields(outFile);
-			outFile.close();
-		}
-		else
-		{
-			trace("No command-line arguments given.");
-		}
 	}
 }
