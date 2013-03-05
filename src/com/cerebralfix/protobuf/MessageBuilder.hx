@@ -15,6 +15,9 @@
 
 package com.cerebralfix.protobuf;
 
+import com.cerebralfix.protobuf.MessageTypeId;
+
+import haxe.ds.ObjectMap;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
@@ -30,6 +33,7 @@ class MessageBuilder
 		var initExprs = new Array<Expr>();
 		var readCases = new Array<Case>();
 		var writeExprs = new Array<Expr>();
+		var submessageIds:ObjectMap<MessageTypeId, Expr> = new ObjectMap<MessageTypeId, Expr>();
 
 		for (field in fields)
 		{
@@ -44,7 +48,7 @@ class MessageBuilder
 							if (implementsInterface(classTypeRef.get(), fieldInterface))
 							{
 								// TODO: Pass the correct type parameters.
-								addField(field, complexType, [], classTypeRef.get(), field.name, initExprs, readCases, writeExprs);
+								addField(field, complexType, [], classTypeRef.get(), field.name, initExprs, readCases, writeExprs, submessageIds);
 							}
 						}
 
@@ -69,7 +73,7 @@ class MessageBuilder
 
 				while (input.hasByte())
 				{
-					var fieldData = FieldDataReader.readFieldData(input);
+					var fieldData = com.cerebralfix.protobuf.FieldDataReader.readFieldData(input);
 
 					trace("FieldDataReader.readFieldData returned " + Std.string(fieldData));
 
@@ -100,10 +104,36 @@ class MessageBuilder
 			}
 		);
 
-		return fields.concat([initFunc, readFunc, writeFunc]);
+		var submessageCases:Array<Case> = [];
+
+		for (messageTypeId in submessageIds.keys())
+		{
+			var fieldExpr:Expr = submessageIds.get(messageTypeId);
+
+			submessageCases.push(
+				{
+					values: [expr(EConst(CString(messageTypeId)))],
+					guard: null,
+					expr: macro return $fieldExpr._message
+				}
+			);
+		}
+
+		var submessageSwitch = expr(ExprDef.ESwitch(macro typeId, submessageCases, macro return null));
+
+		var typeFunc = functionFieldFromExpression(macro function getMessageTypeId():com.cerebralfix.protobuf.MessageTypeId { return $v{getMangledName(Context.getLocalClass().get())}; });
+
+		var submessageFunc = functionFieldFromExpression(
+			macro function getSubmessageWithType(typeId:com.cerebralfix.protobuf.MessageTypeId):com.cerebralfix.protobuf.Message {
+				$submessageSwitch;
+				return null;
+			}
+		);
+
+		return fields.concat([initFunc, readFunc, writeFunc, typeFunc, submessageFunc]);
 	}
 
-	private static function addField(field : Field, fieldType : ComplexType, typeParams: Array<Expr>, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<Case>, writeExprs : Array<Expr>) : Void
+	private static function addField(field : Field, fieldType : ComplexType, typeParams: Array<Expr>, fieldClassType : ClassType, fieldName : String, initExprs : Array<Expr>, readCases : Array<Case>, writeExprs : Array<Expr>, submessageIds:ObjectMap<MessageTypeId, Expr>) : Void
 	{
 		switch (fieldType)
 		{
@@ -128,19 +158,30 @@ class MessageBuilder
 					for (fieldData in $fieldExpr.write())
 					{
 						trace("Writing data for field " + Std.string($fieldNumberExpr));
-						FieldDataWriter.writeFieldData(output, $fieldNumberExpr, fieldData);
+						com.cerebralfix.protobuf.FieldDataWriter.writeFieldData(output, $fieldNumberExpr, fieldData);
 					}
 				};
 
 				initExprs.push(initExpr);
 				readCases.push(readCase);
 				writeExprs.push(writeExpr);
+
+				checkForSubmessage(fieldClassType, fieldExpr, submessageIds);
 			}
 
 			default:
 			{
 
 			}
+		}
+	}
+
+	private static function checkForSubmessage(fieldClassType : ClassType, fieldExpr:Expr, submessageIds:ObjectMap<MessageTypeId, Expr>):Void
+	{
+		if (fieldClassType.name.indexOf("MessageField") == 0)
+		{
+			var messageTypeId = fieldClassType.name.substring("MessageField".length);
+			submessageIds.set(messageTypeId, fieldExpr);
 		}
 	}
 
@@ -229,6 +270,11 @@ class MessageBuilder
 	{
 		//var currentPos = Context.currentPos();
 		return Context.makePosition({min: 0, max: 0, file: ""});
+	}
+
+	private static function getMangledName(classType:ClassType)
+	{
+		return "_" + classType.pack.join("_") + classType.name;
 	}
 
 	// From http://en.usenet.digipedia.org/thread/14424/1626/
