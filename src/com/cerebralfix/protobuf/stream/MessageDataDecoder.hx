@@ -104,7 +104,7 @@ import haxe.io.Bytes;
 			var b3:Int = bytes.get(pos + 2);
 			var b4:Int = bytes.get(pos + 3);
 
-			result = (b1 << 24) | (b2 << 16) | (b3 << 8) | (b4 << 0);
+			result = (b4 << 24) | (b3 << 16) | (b2 << 8) | (b1 << 0);
 		}
 
 		return result;
