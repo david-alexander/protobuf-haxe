@@ -27,6 +27,7 @@ The project is still in the **very early** stages of development, and further in
 * Memory pooling of messages
 * Source code documentation
 * Sample code (e.g. basic chat client/server)
+* Support for Protobuf RPC Services
 * Support for the now-deprecated "group" field type
 
 ### Known Issues
