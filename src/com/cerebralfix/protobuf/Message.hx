@@ -22,7 +22,7 @@ import haxe.io.Output;
 {
 	function initializeMessageFields():Void;
 	function readMessageFields(input:BytesReader):Bool;
-	function writeMessageFields(input:Output):Void;
+	function writeMessageFields(output:Output):Void;
 
 	function getMessageTypeId():MessageTypeId;
 	function getActiveSubmessage():Message;

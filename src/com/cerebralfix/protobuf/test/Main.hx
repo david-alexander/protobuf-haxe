@@ -15,62 +15,145 @@
 
 package com.cerebralfix.protobuf.test;
 
+import com.cerebralfix.protobuf.stream.FlashMessageOutput;
 import com.cerebralfix.protobuf.stream.MessageDataDecoder;
 import com.cerebralfix.protobuf.stream.MessageDispatcher;
 import com.cerebralfix.protobuf.utilities.BytesReader;
-import sys.io.File;
-import sys.net.Socket;
+import flash.Lib;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.events.ProgressEvent;
+import flash.net.Socket;
+import flash.text.TextField;
+import flash.utils.ByteArray;
+import flash.utils.Endian;
 import haxe.io.Bytes;
 
 class Main
 {
+	private static var _socket:Socket;
+	private static var _decoder:MessageDataDecoder<BaseMessage>;
+	private static var _dispatcher:MessageDispatcher<BaseMessage>;
+	private static var _output:FlashMessageOutput;
+
+	private static var _messageView:TextField;
+	private static var _messageField:TextField;
+
+	private static var _isWaitingForUsername:Bool;
+	private static var _isLoggedIn:Bool;
+
 	public static function main():Void
 	{
-		if (Sys.args().length > 0)
+		setUpStage();
+
+		_socket = new Socket();
+		_socket.endian = Endian.LITTLE_ENDIAN;
+		_socket.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData);
+
+		_decoder = new MessageDataDecoder<BaseMessage>();
+
+		_dispatcher = new MessageDispatcher<BaseMessage>();
+		_dispatcher.registerMessageHandler(onConnectionResponseMessage);
+		_dispatcher.registerMessageHandler(onLoginResponseMessage);
+		_dispatcher.registerMessageHandler(onNewUserResponseMessage);
+		_dispatcher.registerMessageHandler(onChatResponseMessage);
+
+		_output = new FlashMessageOutput(_socket);
+
+		_socket.connect("localhost", 1234);
+	}
+
+	public static function setUpStage():Void
+	{
+		var stage = Lib.current;
+
+		_messageView = new TextField();
+		_messageField = new TextField();
+
+		stage.addChild(_messageView);
+		stage.addChild(_messageField);
+
+		//_messageField.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+	}
+
+	public static function onConnectionResponseMessage(message:ConnectionResponseMessage):Void
+	{
+		login();
+	}
+
+	public static function login():Void
+	{
+		_messageView.appendText("Enter your username:\n");
+		_isWaitingForUsername = true;
+	}
+
+	public static function onLoginResponseMessage(message:LoginResponseMessage):Void
+	{
+		if (message.logged_in._value)
 		{
-			var filename = Sys.args()[0];
-			var file = File.read(filename, true);
-
-			var bytes = file.readAll();
-			var bytesReader = new BytesReader(bytes);
-
-			var message = new TestMessage();
-			message.initializeMessageFields(); // TODO: Make the initialisation happen automatically.
-			message.readMessageFields(bytesReader);
-
-			trace(message.testField14._string);
-
-			var outFile = File.write(filename + ".out", true);
-			message.writeMessageFields(outFile);
-			outFile.close();
-
-			var socket:Socket = new Socket();
-			var decoder = new MessageDataDecoder<BaseMessage>();
-			var dispatcher = new MessageDispatcher<BaseMessage>();
-
-			dispatcher.registerMessageHandler(
-				function(message:ConnectionResponseMessage):Void
-				{
-					trace("TESTING");
-				}
-			);
-
-			while (true)
-			{
-				socket.waitForRead();
-				var bytes = socket.input.read(1);
-				decoder.appendBytes(bytes);
-
-				if (decoder.hasMessage())
-				{
-					var message = decoder.getMessage();
-					dispatcher.dispatchMessage(message);
-				}
-			}
+			trace("Logged in.");
+			_isLoggedIn = true;
 		}
 		else
 		{
-			trace("No command-line arguments given.");
+			_isLoggedIn = false;
+			login();
+		}
+	}
+
+	public static function onNewUserResponseMessage(message:NewUserResponseMessage):Void
+	{
+		_messageView.appendText("User Joined: " + message.username + "\n");
+	}
+
+	public static function onChatResponseMessage(message:ChatResponseMessage):Void
+	{
+		_messageView.appendText(message.username + ": " + message.message + "\n");
+	}
+
+	public static function onKeyUp(event:KeyboardEvent):Void
+	{
+		trace("TEST");
+		if (event.keyCode == 13) // carriage return
+		{
+			var baseMessage = new BaseMessage();
+
+			if (_isLoggedIn)
+			{
+				var message = new ChatRequestMessage();
+				message.message._string = _messageField.text;
+
+				baseMessage.chat_request_message._message = message;
+			}
+			else if (_isWaitingForUsername)
+			{
+				var message = new LoginRequestMessage();
+				message.username._string = _messageField.text;
+
+				baseMessage.login_request_message._message = message;
+
+				_isWaitingForUsername = false;
+			}
+
+			_output.writeMessage(baseMessage);
+			_messageField.text = "";
+		}
+	}
+
+	public static function onSocketData(event:ProgressEvent):Void
+	{
+		if (_socket.bytesAvailable > 0)
+		{
+			var bytes:ByteArray = new ByteArray();
+			_socket.readBytes(bytes, 0, _socket.bytesAvailable);
+			_decoder.appendBytes(Bytes.ofData(bytes));
+
+			if (_decoder.hasMessage())
+			{
+				var message = _decoder.getMessage();
+				_dispatcher.dispatchMessage(message);
+			}
 		}
 	}
 }

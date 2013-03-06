@@ -1,4 +1,4 @@
-haxe compile.hxml
+haxe -cpp ..\build\cpp -debug -main com.cerebralfix.protobuf.test.Main -D no-compilation
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 pushd ..\build\cpp

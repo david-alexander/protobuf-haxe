@@ -15,6 +15,8 @@
 
 package com.cerebralfix.protobuf.stream;
 
+import haxe.io.Bytes;
+import haxe.io.BytesOutput;
 import haxe.io.Output;
 
 class MessageOutput
@@ -29,7 +31,10 @@ class MessageOutput
 	// TODO: Support automatically packaging this into a union message.
 	public function writeMessage(message:Message):Void
 	{
-		var bytes = message.writeMessageFields();
+		var bytesOutput:BytesOutput = new BytesOutput();
+		message.writeMessageFields(bytesOutput);
+
+		var bytes:Bytes = bytesOutput.getBytes();
 
 		_output.writeInt(bytes.length);
 		_output.writeBytes(bytes);

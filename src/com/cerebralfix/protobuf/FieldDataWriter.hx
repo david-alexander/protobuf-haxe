@@ -15,7 +15,6 @@
 
 package com.cerebralfix.protobuf;
 
-import haxe.Int32;
 import haxe.Int64;
 import haxe.io.Bytes;
 
