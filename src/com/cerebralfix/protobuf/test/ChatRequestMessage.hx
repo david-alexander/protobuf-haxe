@@ -7,5 +7,5 @@ class ChatRequestMessage implements com.cerebralfix.protobuf.Message {
 
   // required string message = 1;
   @:fieldNumber(1)
-  public var message:com.cerebralfix.protobuf.fieldtypes.StringField;
+  public var message (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 }

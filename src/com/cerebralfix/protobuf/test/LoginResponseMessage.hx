@@ -7,9 +7,9 @@ class LoginResponseMessage implements com.cerebralfix.protobuf.Message {
 
   // required bool logged_in = 1;
   @:fieldNumber(1)
-  public var logged_in:com.cerebralfix.protobuf.fieldtypes.BoolField;
+  public var logged_in (default, null) : com.cerebralfix.protobuf.fieldtypes.BoolField;
 
   // optional string username = 2;
   @:fieldNumber(2)
-  public var username:com.cerebralfix.protobuf.fieldtypes.StringField;
+  public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 }

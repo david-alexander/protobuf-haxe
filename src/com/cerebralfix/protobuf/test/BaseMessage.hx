@@ -7,29 +7,29 @@ class BaseMessage implements com.cerebralfix.protobuf.Message {
 
   // optional .ConnectionResponseMessage connection_response_message = 1;
   @:fieldNumber(1)
-  public var connection_response_message:com.cerebralfix.protobuf.fieldtypes.MessageField<ConnectionResponseMessage>;
+  public var connection_response_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<ConnectionResponseMessage>;
 
   // optional .LoginRequestMessage login_request_message = 2;
   @:fieldNumber(2)
-  public var login_request_message:com.cerebralfix.protobuf.fieldtypes.MessageField<LoginRequestMessage>;
+  public var login_request_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<LoginRequestMessage>;
 
   // optional .LoginResponseMessage login_response_message = 3;
   @:fieldNumber(3)
-  public var login_response_message:com.cerebralfix.protobuf.fieldtypes.MessageField<LoginResponseMessage>;
+  public var login_response_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<LoginResponseMessage>;
 
   // optional .ChatRequestMessage chat_request_message = 4;
   @:fieldNumber(4)
-  public var chat_request_message:com.cerebralfix.protobuf.fieldtypes.MessageField<ChatRequestMessage>;
+  public var chat_request_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<ChatRequestMessage>;
 
   // optional .ChatResponseMessage chat_response_message = 5;
   @:fieldNumber(5)
-  public var chat_response_message:com.cerebralfix.protobuf.fieldtypes.MessageField<ChatResponseMessage>;
+  public var chat_response_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<ChatResponseMessage>;
 
   // optional .NewUserResponseMessage new_user_response_message = 6;
   @:fieldNumber(6)
-  public var new_user_response_message:com.cerebralfix.protobuf.fieldtypes.MessageField<NewUserResponseMessage>;
+  public var new_user_response_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<NewUserResponseMessage>;
 
   // optional .UserDisconnectedResponseMessage user_disconnected_response_message = 7;
   @:fieldNumber(7)
-  public var user_disconnected_response_message:com.cerebralfix.protobuf.fieldtypes.MessageField<UserDisconnectedResponseMessage>;
+  public var user_disconnected_response_message (default, null) : com.cerebralfix.protobuf.fieldtypes.MessageField<UserDisconnectedResponseMessage>;
 }

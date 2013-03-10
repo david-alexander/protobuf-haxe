@@ -105,7 +105,7 @@ static void GenerateField(io::Printer* printer, const FieldDescriptor* field)
 	printer->Print("@:fieldNumber($field_number$)\n",
 		"field_number", field_number_string.str());
 
-	printer->Print("public var $field_name$:$field_type$;\n",
+	printer->Print("public var $field_name$ (default, null) : $field_type$;\n",
 		"field_name", field->name(),
 		"field_type", field_type);
 }

@@ -7,5 +7,5 @@ class NewUserResponseMessage implements com.cerebralfix.protobuf.Message {
 
   // required string username = 1;
   @:fieldNumber(1)
-  public var username:com.cerebralfix.protobuf.fieldtypes.StringField;
+  public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 }

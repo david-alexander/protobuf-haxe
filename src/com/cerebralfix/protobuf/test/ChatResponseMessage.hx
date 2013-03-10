@@ -7,9 +7,9 @@ class ChatResponseMessage implements com.cerebralfix.protobuf.Message {
 
   // required string username = 1;
   @:fieldNumber(1)
-  public var username:com.cerebralfix.protobuf.fieldtypes.StringField;
+  public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 
   // required string message = 2;
   @:fieldNumber(2)
-  public var message:com.cerebralfix.protobuf.fieldtypes.StringField;
+  public var message (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 }
