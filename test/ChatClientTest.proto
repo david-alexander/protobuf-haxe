@@ -1,0 +1,68 @@
+package com.cerebralfix.protobuf.test;
+
+// A union message containing all other types of messages that we want to send and receive.
+message BaseMessage
+{
+	optional ConnectionResponseMessage connection_response_message = 1;
+	optional LoginRequestMessage login_request_message = 2;
+	optional LoginResponseMessage login_response_message = 3;
+	optional ChatRequestMessage chat_request_message = 4;
+	optional ChatResponseMessage chat_response_message = 5;
+	optional NewUserResponseMessage new_user_response_message = 6;
+	optional UserDisconnectedResponseMessage user_disconnected_response_message = 7;
+}
+
+// A message sent by the server to a client when the connection is first made.
+message ConnectionResponseMessage
+{
+	// The usernames of all users who are already connected.
+	repeated string usernames = 1;
+}
+
+// A message sent by the client when the user wishes to log in under a particular username.
+message LoginRequestMessage
+{
+	// The username that the user wants to use.
+	required string username = 1;
+}
+
+// A message sent by the server in response to the LoginRequestMessage.
+message LoginResponseMessage
+{
+	// True if the user logged in successfully; false if the login failed because the username was already taken.
+	required bool logged_in = 1;
+
+	// The username that the user is now logged in with. Only set if the user logged in successfully.
+	optional string username = 2;
+}
+
+// A message sent by the client when the user wishes to send a chat message to the other users.
+message ChatRequestMessage
+{
+	// The message to send.
+	required string message = 1;
+}
+
+// A message sent by the server to all clients when one client sends a ChatRequestMessage.
+message ChatResponseMessage
+{
+	// The username of the logged-in user who sent the message.
+	required string username = 1;
+
+	// The message that was sent.
+	required string message = 2;
+}
+
+// A message send by the server to all clients when a new user logs in.
+message NewUserResponseMessage
+{
+	// The username of the new user.
+	required string username = 1;
+}
+
+// A message sent by the server to all clients when a user disconnects.
+message UserDisconnectedResponseMessage
+{
+	// The username of the user who disconnected.
+	required string username = 1;
+}
