@@ -37,29 +37,16 @@ class MacroUtilities
 		{
 			switch (field.kind)
 			{
-				case FVar(complexType, _): // TODO: Support properties.
+				case FVar(complexType, _) | FProp(_, _, complexType, _):
 				{
-					switch (MacroUtilities.resolveComplexType(complexType))
+					var classType = classTypeFromComplexType(complexType);
+					var typePath = typePathFromComplexType(complexType);
+
+					if (classType != null && implementsInterface(classType, targetInterface) && typePath != null)
 					{
-						case TInst(classTypeRef, _):
-						{
-							if (implementsInterface(classTypeRef.get(), targetInterface))
-							{
-								switch (complexType)
-								{
-									case TPath(fieldTypePath):
-									{
-										// TODO: Use the correct type parameters.
-										var typeParams:Array<Expr> = [];
-										result.push({field: field, classType: classTypeRef.get(), constructorExprDef: ExprDef.ENew(fieldTypePath, typeParams)});
-									}
-
-									default: {}
-								}
-							}
-						}
-
-						default: {}
+						// TODO: Use the correct type parameters.
+						var typeParams:Array<Expr> = [];
+						result.push({field: field, classType: classType, constructorExprDef: ExprDef.ENew(typePath, typeParams)});
 					}
 				}
 
@@ -171,7 +158,14 @@ class MacroUtilities
 		}
 	}
 
-
+	public static function typePathFromComplexType(complexType:ComplexType):TypePath
+	{
+		return switch (complexType)
+		{
+			case TPath(typePath): typePath;
+			default: null;
+		}
+	}
 
 	/**
 	 *	Creates an Expr from the given ExprDef, at the current source position.

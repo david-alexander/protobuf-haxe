@@ -153,17 +153,9 @@ class MessageBuilder
 			{
 				switch (entry.params[0].expr)
 				{
-					case EConst(c):
+					case EConst(CInt(value)):
 					{
-						switch (c)
-						{
-							case CInt(value):
-							{
-								fieldNumber = Std.parseInt(value);
-							}
-
-							default: {}
-						}
+						fieldNumber = Std.parseInt(value);
 					}
 
 					default: {}
