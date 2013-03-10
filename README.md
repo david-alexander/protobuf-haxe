@@ -12,7 +12,7 @@ The project is still in the **very early** stages of development, and further in
 * ProtoC generator plugin (see `protogen` directory)
 * Reading and writing from byte arrays
 * All primitive types (not all tested yet - expect some issues with signed vs unsigned integers, endianness, etc.)
-* Repeated fields (non-packed only)
+* Repeated fields (packed and non-packed)
 * Messages within messages
 * Length-prefixed messages (à la <a href="https://code.google.com/p/protobuf-net/">protobuf-net</a>)
 * Utility code for dealing with sockets (synchronous and asynchronous)
@@ -22,7 +22,6 @@ The project is still in the **very early** stages of development, and further in
 
 * Type-safe enum fields
 * Required fields (currently all are considered optional, even if specified as required in the proto file)
-* Packed repeated fields
 * Unit tests for the library and the ProtoC generator, covering all data types
 * Memory pooling of messages
 * Source code documentation
