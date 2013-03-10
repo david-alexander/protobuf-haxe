@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class BoolField implements Field
+class BoolField implements ValueField<Null<Bool>>
 {
-	public var _value:Null<Bool>;
+	public var value (default, default) : Null<Bool>;
 
 	public inline function new()
 	{
@@ -30,9 +30,9 @@ class BoolField implements Field
 	{
 		switch (data)
 		{
-			case VarInt(value):
+			case VarInt(dataValue):
 			{
-				_value = !Int64.isZero(value);
+				value = !Int64.isZero(dataValue);
 			}
 
 			default: {}
@@ -41,9 +41,9 @@ class BoolField implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
-			return [VarInt(Int64.ofInt(_value ? 1 : 0))];
+			return [VarInt(Int64.ofInt(value ? 1 : 0))];
 		}
 		else
 		{
@@ -53,6 +53,6 @@ class BoolField implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

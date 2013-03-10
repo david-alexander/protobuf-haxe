@@ -20,9 +20,9 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 
-class FloatField implements Field
+class FloatField implements ValueField<Null<Float>>
 {
-	public var _value:Null<Float>;
+	public var value:Null<Float>;
 
 	public inline function new()
 	{
@@ -33,15 +33,15 @@ class FloatField implements Field
 	{
 		switch (data)
 		{
-			case ThirtyTwoBit(value):
+			case ThirtyTwoBit(dataValue):
 			{
 				var bytesOutput = new BytesOutput();
-				bytesOutput.writeInt32(value);
+				bytesOutput.writeInt32(dataValue);
 
 				var bytes = bytesOutput.getBytes();
 
 				var bytesInput = new BytesInput(bytes, 0, bytes.length);
-				_value = bytesInput.readFloat();
+				value = bytesInput.readFloat();
 			}
 
 			default: {}
@@ -50,10 +50,10 @@ class FloatField implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
 			var bytesOutput = new BytesOutput();
-			bytesOutput.writeFloat(_value);
+			bytesOutput.writeFloat(value);
 			var bytes = bytesOutput.getBytes();
 			var bytesInput = new BytesInput(bytes, 0, bytes.length);
 
@@ -67,6 +67,6 @@ class FloatField implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class SInt64Field implements Field
+class SInt64Field implements ValueField<Int64>
 {
-	public var _value:Int64;
+	public var value:Int64;
 
 	public inline function new()
 	{
@@ -30,10 +30,10 @@ class SInt64Field implements Field
 	{
 		switch (data)
 		{
-			case VarInt(value):
+			case VarInt(dataValue):
 			{
 				// From http://stackoverflow.com/questions/2210923/zig-zag-decoding
-				_value = Int64.xor(Int64.shr(value, 1), Int64.neg(Int64.and(value, Int64.ofInt(1))));
+				value = Int64.xor(Int64.shr(dataValue, 1), Int64.neg(Int64.and(dataValue, Int64.ofInt(1))));
 			}
 
 			default: {}
@@ -42,9 +42,9 @@ class SInt64Field implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
-			return [VarInt(Int64.xor(Int64.shl(_value, 1), Int64.shr(_value, 31)))];
+			return [VarInt(Int64.xor(Int64.shl(value, 1), Int64.shr(value, 31)))];
 		}
 		else
 		{
@@ -54,6 +54,6 @@ class SInt64Field implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

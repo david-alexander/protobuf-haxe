@@ -19,9 +19,9 @@ import com.cerebralfix.protobuf.utilities.BytesReader;
 import haxe.io.BytesBuffer;
 import haxe.io.BytesOutput;
 
-@:generic class MessageField<TMessage : (Message, {function new():Void;})> implements Field
+@:generic class MessageField<TMessage : (Message, {function new():Void;})> implements ValueField<TMessage>
 {
-	public var _message:TMessage;
+	public var value:TMessage;
 
 	public inline function new()
 	{
@@ -34,9 +34,9 @@ import haxe.io.BytesOutput;
 		{
 			case LengthDelimited(bytes):
 			{
-				_message = new TMessage();
-				_message.initializeMessageFields();
-				_message.readMessageFields(new BytesReader(bytes));
+				value = new TMessage();
+				value.initializeMessageFields();
+				value.readMessageFields(new BytesReader(bytes));
 			}
 
 			default: {}
@@ -45,10 +45,10 @@ import haxe.io.BytesOutput;
 
 	public inline function write():Array<FieldData>
 	{
-		if (_message != null)
+		if (value != null)
 		{
 			var output = new BytesOutput();
-			_message.writeMessageFields(output);
+			value.writeMessageFields(output);
 			var bytes = output.getBytes();
 
 			return [LengthDelimited(bytes)];
@@ -61,6 +61,6 @@ import haxe.io.BytesOutput;
 
 	public inline function isSet():Bool
 	{
-		return _message != null;
+		return value != null;
 	}
 }

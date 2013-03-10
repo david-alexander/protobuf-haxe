@@ -15,9 +15,9 @@
 
 package com.cerebralfix.protobuf.fieldtypes;
 
-class Fixed32Field implements Field
+class Fixed32Field implements ValueField<Null<Int>>
 {
-	public var _value:Null<Int>;
+	public var value:Null<Int>;
 
 	public inline function new()
 	{
@@ -28,9 +28,9 @@ class Fixed32Field implements Field
 	{
 		switch (data)
 		{
-			case ThirtyTwoBit(value):
+			case ThirtyTwoBit(dataValue):
 			{
-				_value = value;
+				value = dataValue;
 			}
 
 			default: {}
@@ -39,9 +39,9 @@ class Fixed32Field implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
-			return [ThirtyTwoBit(_value)];
+			return [ThirtyTwoBit(value)];
 		}
 		else
 		{
@@ -51,6 +51,6 @@ class Fixed32Field implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

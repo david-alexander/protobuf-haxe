@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.io.Bytes;
 
-class BytesField implements Field
+class BytesField implements ValueField<Bytes>
 {
-	public var _bytes:Bytes;
+	public var value (default, default) : Bytes;
 
 	public inline function new()
 	{
@@ -32,8 +32,8 @@ class BytesField implements Field
 		{
 			case LengthDelimited(bytes):
 			{
-				_bytes = Bytes.alloc(bytes.length);
-				_bytes.blit(0, bytes, 0, bytes.length);
+				value = Bytes.alloc(bytes.length);
+				value.blit(0, bytes, 0, bytes.length);
 			}
 
 			default: {}
@@ -42,9 +42,9 @@ class BytesField implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_bytes != null)
+		if (value != null)
 		{
-			return [LengthDelimited(_bytes)];
+			return [LengthDelimited(value)];
 		}
 		else
 		{
@@ -54,6 +54,6 @@ class BytesField implements Field
 
 	public inline function isSet():Bool
 	{
-		return _bytes != null;
+		return value != null;
 	}
 }

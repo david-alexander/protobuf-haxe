@@ -20,9 +20,9 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 
-class DoubleField implements Field
+class DoubleField implements ValueField<Null<Float>>
 {
-	public var _value:Null<Float>;
+	public var value (default, default) : Null<Float>;
 
 	public inline function new()
 	{
@@ -33,23 +33,23 @@ class DoubleField implements Field
 	{
 		switch (data)
 		{
-			case SixtyFourBit(value):
+			case SixtyFourBit(dataValue):
 			{
 				var bytesOutput = new BytesOutput();
 
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 56)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 48)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 40)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 32)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 24)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 16)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 8)));
-				bytesOutput.writeByte(Int64.toInt(Int64.shr(value, 0)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 56)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 48)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 40)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 32)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 24)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 16)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 8)));
+				bytesOutput.writeByte(Int64.toInt(Int64.shr(dataValue, 0)));
 
 				var bytes = bytesOutput.getBytes();
 
 				var bytesInput = new BytesInput(bytes, 0, bytes.length);
-				_value = bytesInput.readDouble();
+				value = bytesInput.readDouble();
 			}
 
 			default: {}
@@ -58,10 +58,10 @@ class DoubleField implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
 			var bytesOutput = new BytesOutput();
-			bytesOutput.writeDouble(_value);
+			bytesOutput.writeDouble(value);
 			var bytes = bytesOutput.getBytes();
 			var bytesInput = new BytesInput(bytes, 0, bytes.length);
 
@@ -86,6 +86,6 @@ class DoubleField implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

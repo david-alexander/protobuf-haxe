@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class UInt32Field implements Field
+class UInt32Field implements ValueField<Null<Int>>
 {
-	public var _value:Null<Int>;
+	public var value:Null<Int>;
 
 	public inline function new()
 	{
@@ -30,9 +30,9 @@ class UInt32Field implements Field
 	{
 		switch (data)
 		{
-			case VarInt(value):
+			case VarInt(dataValue):
 			{
-				_value = Int64.toInt(value);
+				value = Int64.toInt(dataValue);
 			}
 
 			default: {}
@@ -41,9 +41,9 @@ class UInt32Field implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
-			return [VarInt(Int64.ofInt(_value))];
+			return [VarInt(Int64.ofInt(value))];
 		}
 		else
 		{
@@ -53,6 +53,6 @@ class UInt32Field implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

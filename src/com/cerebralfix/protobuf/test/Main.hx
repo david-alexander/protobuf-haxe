@@ -104,7 +104,7 @@ class Main
 
 	public static function onLoginResponseMessage(message:LoginResponseMessage):Void
 	{
-		if (message.logged_in._value)
+		if (message.logged_in.value)
 		{
 			trace("Logged in.");
 			_isLoggedIn = true;
@@ -118,12 +118,12 @@ class Main
 
 	public static function onNewUserResponseMessage(message:NewUserResponseMessage):Void
 	{
-		printText("User Joined: " + message.username._string + "\n");
+		printText("User Joined: " + message.username.value + "\n");
 	}
 
 	public static function onChatResponseMessage(message:ChatResponseMessage):Void
 	{
-		printText(message.username._string + ": " + message.message._string + "\n");
+		printText(message.username.value + ": " + message.message.value + "\n");
 	}
 
 	public static function printText(text:String):Void
@@ -143,17 +143,17 @@ class Main
 			{
 				var message = new ChatRequestMessage();
 				message.initializeMessageFields();
-				message.message._string = _messageField.text;
+				message.message.value = _messageField.text;
 
-				baseMessage.chat_request_message._message = message;
+				baseMessage.chat_request_message.value = message;
 			}
 			else if (_isWaitingForUsername)
 			{
 				var message = new LoginRequestMessage();
 				message.initializeMessageFields();
-				message.username._string = _messageField.text;
+				message.username.value = _messageField.text;
 
-				baseMessage.login_request_message._message = message;
+				baseMessage.login_request_message.value = message;
 
 				_isWaitingForUsername = false;
 			}

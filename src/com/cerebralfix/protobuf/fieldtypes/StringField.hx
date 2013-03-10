@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.io.Bytes;
 
-class StringField implements Field
+class StringField implements ValueField<String>
 {
-	public var _string:String;
+	public var value:String;
 
 	public inline function new()
 	{
@@ -32,7 +32,7 @@ class StringField implements Field
 		{
 			case LengthDelimited(bytes):
 			{
-				_string = bytes.toString();
+				value = bytes.toString();
 			}
 
 			default: {}
@@ -41,9 +41,9 @@ class StringField implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_string != null)
+		if (value != null)
 		{
-			return [LengthDelimited(Bytes.ofString(_string))];
+			return [LengthDelimited(Bytes.ofString(value))];
 		}
 		else
 		{
@@ -53,6 +53,6 @@ class StringField implements Field
 
 	public inline function isSet():Bool
 	{
-		return _string != null;
+		return value != null;
 	}
 }

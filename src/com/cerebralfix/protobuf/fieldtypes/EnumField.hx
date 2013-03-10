@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class EnumField<T> implements Field
+class EnumField<T> implements ValueField<Null<T>>
 {
-	public var _value:Null<T>;
+	public var value:Null<T>;
 
 	public inline function new()
 	{
@@ -41,7 +41,7 @@ class EnumField<T> implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
 			// TODO
 			return [];
@@ -54,6 +54,6 @@ class EnumField<T> implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }

@@ -136,7 +136,7 @@ class MessageBuilder
 				{
 					if ($fieldExpr.isSet())
 					{
-						return $fieldExpr._message;
+						return $fieldExpr.value;
 					}
 				}
 			);

@@ -17,9 +17,9 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class SFixed64Field implements Field
+class SFixed64Field implements ValueField<Int64>
 {
-	public var _value:Int64;
+	public var value:Int64;
 
 	public inline function new()
 	{
@@ -30,9 +30,9 @@ class SFixed64Field implements Field
 	{
 		switch (data)
 		{
-			case SixtyFourBit(value):
+			case SixtyFourBit(dataValue):
 			{
-				_value = value;
+				value = dataValue;
 			}
 
 			default: {}
@@ -41,9 +41,9 @@ class SFixed64Field implements Field
 
 	public inline function write():Array<FieldData>
 	{
-		if (_value != null)
+		if (value != null)
 		{
-			return [SixtyFourBit(_value)];
+			return [SixtyFourBit(value)];
 		}
 		else
 		{
@@ -53,6 +53,6 @@ class SFixed64Field implements Field
 
 	public inline function isSet():Bool
 	{
-		return _value != null;
+		return value != null;
 	}
 }
