@@ -65,9 +65,14 @@ class MacroUtilities
 	 **/
 	public static function implementsInterface(t:ClassType, targetInterface:ClassType):Bool
 	{
+		if (t.name == targetInterface.name)
+		{
+			return true;
+		}
+
 		for (implementedInterfaceRef in t.interfaces)
 		{
-			if (implementedInterfaceRef.t.get().name == targetInterface.name)
+			if (implementsInterface(implementedInterfaceRef.t.get(), targetInterface))
 			{
 				return true;
 			}
