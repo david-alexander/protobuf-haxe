@@ -13,9 +13,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf;
+package com.cerebralfix.protobuf.field;
 
-interface ValueField<TValue> extends Field
+import haxe.Int64;
+import haxe.io.Bytes;
+
+enum FieldData
 {
-	var value (default, default) : TValue;
+	VarInt(value : Int64);
+	ThirtyTwoBit(value : Int);
+	SixtyFourBit(value : Int64);
+	LengthDelimited(value : Bytes);
+	//StartGroup;
+	//EndGroup;
+	Unknown;
+	Incomplete;
 }

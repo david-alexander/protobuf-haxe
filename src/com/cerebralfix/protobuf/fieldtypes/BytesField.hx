@@ -16,6 +16,10 @@
 package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.io.Bytes;
+import com.cerebralfix.protobuf.field.FieldData;
+import com.cerebralfix.protobuf.field.PackableField;
+import com.cerebralfix.protobuf.field.PackableType;
+import com.cerebralfix.protobuf.field.ValueField;
 
 class BytesField implements ValueField<Bytes>
 {
@@ -57,7 +61,10 @@ class BytesField implements ValueField<Bytes>
 		return value != null;
 	}
 
-	public inline function getPackableType():PackableField.PackableType
+	public inline function getPackableType():PackableType
+import com.cerebralfix.protobuf.field.PackableField;
+import com.cerebralfix.protobuf.field.PackableType;
+import com.cerebralfix.protobuf.field.ValueField;
 	{
 		return PackableVarInt;
 	}

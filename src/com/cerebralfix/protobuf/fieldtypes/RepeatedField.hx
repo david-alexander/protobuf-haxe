@@ -15,6 +15,10 @@
 
 package com.cerebralfix.protobuf.fieldtypes;
 
+import com.cerebralfix.protobuf.field.Field;
+import com.cerebralfix.protobuf.field.FieldData;
+import com.cerebralfix.protobuf.field.ValueField;
+
 @:generic class RepeatedField<TField : (Field, {function new():Void;})> implements Field
 {
 	public var _fields:Array<TField>;

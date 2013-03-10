@@ -18,6 +18,8 @@ package com.cerebralfix.protobuf.fieldtypes;
 import com.cerebralfix.protobuf.utilities.BytesReader;
 import haxe.io.BytesBuffer;
 import haxe.io.BytesOutput;
+import com.cerebralfix.protobuf.field.FieldData;
+import com.cerebralfix.protobuf.field.ValueField;
 
 @:generic class MessageField<TMessage : (Message, {function new():Void;})> implements ValueField<TMessage>
 {

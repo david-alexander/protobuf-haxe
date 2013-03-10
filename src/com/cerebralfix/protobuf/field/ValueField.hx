@@ -13,16 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf;
+package com.cerebralfix.protobuf.field;
 
-enum PackableType
+interface ValueField<TValue> extends Field
 {
-	PackableVarInt;
-	PackableThirtyTwoBit;
-	PackableSixtyFourBit;
-}
-
-interface PackableField extends Field
-{
-	function getPackableType():PackableType;
+	var value (default, default) : TValue;
 }

@@ -31,7 +31,7 @@ class MessageBuilder
 		var submessageExprs = new Array<Expr>();
 
 		var fields = Context.getBuildFields();
-		var fieldInterface = MacroUtilities.classTypeFromComplexType(macro : com.cerebralfix.protobuf.Field);
+		var fieldInterface = MacroUtilities.classTypeFromComplexType(macro : com.cerebralfix.protobuf.field.Field);
 
 		for (fieldInfo in MacroUtilities.getDataFieldsImplementingInterface(fields, fieldInterface))
 		{
@@ -51,7 +51,7 @@ class MessageBuilder
 
 				while (input.hasByte())
 				{
-					var fieldData = com.cerebralfix.protobuf.FieldDataReader.readFieldData(input);
+					var fieldData = com.cerebralfix.protobuf.field.FieldDataReader.readFieldData(input);
 
 					trace("FieldDataReader.readFieldData returned " + Std.string(fieldData));
 
@@ -117,7 +117,7 @@ class MessageBuilder
 			for (fieldData in $fieldExpr.write())
 			{
 				trace("Writing data for field " + Std.string($fieldNumberExpr));
-				com.cerebralfix.protobuf.FieldDataWriter.writeFieldData(output, $fieldNumberExpr, fieldData);
+				com.cerebralfix.protobuf.field.FieldDataWriter.writeFieldData(output, $fieldNumberExpr, fieldData);
 			}
 		};
 

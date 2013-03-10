@@ -15,6 +15,11 @@
 
 package com.cerebralfix.protobuf.fieldtypes;
 
+import com.cerebralfix.protobuf.field.FieldData;
+import com.cerebralfix.protobuf.field.PackableField;
+import com.cerebralfix.protobuf.field.PackableType;
+import com.cerebralfix.protobuf.field.ValueField;
+
 class SFixed32Field implements ValueField<Null<Int>> implements PackableField
 {
 	public var value:Null<Int>;
@@ -54,7 +59,10 @@ class SFixed32Field implements ValueField<Null<Int>> implements PackableField
 		return value != null;
 	}
 
-	public inline function getPackableType():PackableField.PackableType
+	public inline function getPackableType():PackableType
+import com.cerebralfix.protobuf.field.PackableField;
+import com.cerebralfix.protobuf.field.PackableType;
+import com.cerebralfix.protobuf.field.ValueField;
 	{
 		return PackableThirtyTwoBit;
 	}

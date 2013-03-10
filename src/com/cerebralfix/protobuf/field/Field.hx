@@ -13,19 +13,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf;
+package com.cerebralfix.protobuf.field;
 
-import haxe.Int64;
-import haxe.io.Bytes;
-
-enum FieldData
+interface Field
 {
-	VarInt(value : Int64);
-	ThirtyTwoBit(value : Int);
-	SixtyFourBit(value : Int64);
-	LengthDelimited(value : Bytes);
-	//StartGroup;
-	//EndGroup;
-	Unknown;
-	Incomplete;
+	function readFrom(data:FieldData):Void;
+	function write():Array<FieldData>;
+	function isSet():Bool;
 }

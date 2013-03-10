@@ -13,11 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf;
+package com.cerebralfix.protobuf.field;
 
-interface Field
+interface PackableField extends Field
 {
-	function readFrom(data:FieldData):Void;
-	function write():Array<FieldData>;
-	function isSet():Bool;
+	function getPackableType():PackableType;
 }

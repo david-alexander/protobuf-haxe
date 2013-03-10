@@ -19,6 +19,10 @@ import haxe.Int64;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
+import com.cerebralfix.protobuf.field.FieldData;
+import com.cerebralfix.protobuf.field.PackableField;
+import com.cerebralfix.protobuf.field.PackableType;
+import com.cerebralfix.protobuf.field.ValueField;
 
 class DoubleField implements ValueField<Null<Float>> implements PackableField
 {
@@ -89,7 +93,10 @@ class DoubleField implements ValueField<Null<Float>> implements PackableField
 		return value != null;
 	}
 
-	public inline function getPackableType():PackableField.PackableType
+	public inline function getPackableType():PackableType
+import com.cerebralfix.protobuf.field.PackableField;
+import com.cerebralfix.protobuf.field.PackableType;
+import com.cerebralfix.protobuf.field.ValueField;
 	{
 		return PackableSixtyFourBit;
 	}

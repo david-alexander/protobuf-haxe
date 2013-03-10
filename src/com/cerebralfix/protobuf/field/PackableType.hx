@@ -13,48 +13,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf.fieldtypes;
+package com.cerebralfix.protobuf.field;
 
-import haxe.io.Bytes;
-import com.cerebralfix.protobuf.field.FieldData;
-import com.cerebralfix.protobuf.field.ValueField;
-
-class StringField implements ValueField<String>
+enum PackableType
 {
-	public var value:String;
-
-	public inline function new()
-	{
-
-	}
-
-	public inline function readFrom(data:FieldData):Void
-	{
-		switch (data)
-		{
-			case LengthDelimited(bytes):
-			{
-				value = bytes.toString();
-			}
-
-			default: {}
-		}
-	}
-
-	public inline function write():Array<FieldData>
-	{
-		if (value != null)
-		{
-			return [LengthDelimited(Bytes.ofString(value))];
-		}
-		else
-		{
-			return [];
-		}
-	}
-
-	public inline function isSet():Bool
-	{
-		return value != null;
-	}
+	PackableVarInt;
+	PackableThirtyTwoBit;
+	PackableSixtyFourBit;
 }
