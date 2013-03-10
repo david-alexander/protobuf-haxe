@@ -24,10 +24,10 @@ typedef FieldInfo = {field : Field, classType : ClassType, constructorExprDef : 
 class MacroUtilities
 {
 	/**
-	 *	Gets information on all of the fields from the given array that are data fields whose data types implement the specified interface.
-	 *	@param	fields				The fields.
-	 *	@param	targetInterface		The interface.
-	 *	@return	An array of FieldInfo structs, each containing information on a data field whose data type implements the specified interface.
+	 	Gets information on all of the fields from the given array that are data fields whose data types implement the specified interface.
+	 	@param	fields				The fields.
+	 	@param	targetInterface		The interface.
+	 	@return	An array of FieldInfo structs, each containing information on a data field whose data type implements the specified interface.
 	 **/
 	public static function getDataFieldsImplementingInterface(fields:Array<Field>, targetInterface:ClassType):Array<FieldInfo>
 	{
@@ -58,38 +58,50 @@ class MacroUtilities
 	}
 
 	/**
-	 *	Determines whether the given class implements the given interface.
-	 *	@param	t					The class.
-	 *	@param	targetInterface		The interface.
-	 *	@return	True if the class implements the given interface; false otherwise.
+	 	Determines whether the given class implements the given interface.
+	 	@param	t					The class.
+	 	@param	targetInterface		The interface.
+	 	@return	True if the class implements the given interface; false otherwise.
 	 **/
 	public static function implementsInterface(t:ClassType, targetInterface:ClassType):Bool
 	{
-		if (t.name == targetInterface.name)
-		{
-			return true;
-		}
+		return getTypeParametersForImplementedInterface(t, targetInterface) != null;
+	}
 
+	public static function getTypeParametersForImplementedInterface(t:ClassType, targetInterface:ClassType):Array<Type>
+	{
 		for (implementedInterfaceRef in t.interfaces)
 		{
-			if (implementsInterface(implementedInterfaceRef.t.get(), targetInterface))
+			if (implementedInterfaceRef.t.get().name == targetInterface.name)
 			{
-				return true;
+				return implementedInterfaceRef.params;
+			}
+
+			var parentParams = getTypeParametersForImplementedInterface(implementedInterfaceRef.t.get(), targetInterface);
+
+			if (parentParams != null)
+			{
+				return parentParams;
 			}
 		}
 
-		if (t.superClass != null && implementsInterface(t.superClass.t.get(), targetInterface))
+		if (t.superClass != null)
 		{
-			return true;
+			var parentParams = getTypeParametersForImplementedInterface(t.superClass.t.get(), targetInterface);
+
+			if (parentParams != null)
+			{
+				return parentParams;
+			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
-	 *	Creates a Field that uses the function defined in the given expression (assumed to contain an ExprDef.EFunction instance) as a method to be added to a class.
-	 *	@param	expr	An Expr that directly contains a function to be wrapped in a Field.
-	 *	@return	The Field.
+	 	Creates a Field that uses the function defined in the given expression (assumed to contain an ExprDef.EFunction instance) as a method to be added to a class.
+	 	@param	expr	An Expr that directly contains a function to be wrapped in a Field.
+	 	@return	The Field.
 	 **/
 	public static function functionFieldFromExpression(expr:Expr):Field
 	{
@@ -107,8 +119,8 @@ class MacroUtilities
 	}
 
 	/**
-	 *	Gets the current source position, to be used in expressions and/or compiler warnings and errors.
-	 *	@return	The position.
+	 	Gets the current source position, to be used in expressions and/or compiler warnings and errors.
+	 	@return	The position.
 	 **/
 	public static function getPosition():Position
 	{
@@ -118,8 +130,8 @@ class MacroUtilities
 	}
 
 	/**
-	 *	Gets a string that uniquely names the given ClassType.
-	 *	@return	A string that uniquely names the given ClassType.
+	 	Gets a string that uniquely names the given ClassType.
+	 	@return	A string that uniquely names the given ClassType.
 	 **/
 	public static function getMangledName(classType:ClassType)
 	{
@@ -127,9 +139,9 @@ class MacroUtilities
 	}
 
 	/**
-	 *	Converts a ComplexType into a Type.
-	 *	@param	ComplexType		A ComplexType.
-	 *	@return	The Type that corresponds to the given ComplexType.
+	 	Converts a ComplexType into a Type.
+	 	@param	ComplexType		A ComplexType.
+	 	@return	The Type that corresponds to the given ComplexType.
 	 **/
 	public static function resolveComplexType(t:ComplexType):Type
 	{
@@ -143,9 +155,9 @@ class MacroUtilities
 	}
 
 	/**
-	 *	Converts a ComplexType into a ClassType.
-	 *	@param	ComplexType		A ComplexType.
-	 *	@return	The ClassType that corresponds to the given ComplexType.
+	 	Converts a ComplexType into a ClassType.
+	 	@param	ComplexType		A ComplexType.
+	 	@return	The ClassType that corresponds to the given ComplexType.
 	 **/
 	public static function classTypeFromComplexType(complexType:ComplexType):ClassType
 	{
@@ -172,10 +184,26 @@ class MacroUtilities
 		}
 	}
 
+	public static function getClassTypeByName(name:String):ClassType
+	{
+		switch (Context.getType(name))
+		{
+			case TInst(classTypeRef, _):
+			{
+				return classTypeRef.get();
+			}
+
+			default:
+			{
+				return null;
+			}
+		}
+	}
+
 	/**
-	 *	Creates an Expr from the given ExprDef, at the current source position.
-	 *	@param	e		An ExprDef.
-	 *	@return	An Expr containing the given ExprDef.
+	 	Creates an Expr from the given ExprDef, at the current source position.
+	 	@param	e		An ExprDef.
+	 	@return	An Expr containing the given ExprDef.
 	 **/
 	public static function expr(e:ExprDef):Expr
 	{
