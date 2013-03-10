@@ -2,14 +2,21 @@
 
 package com.cerebralfix.protobuf.test;
 
+/**
+  	 A message sent by the server to all clients when one client sends a ChatRequestMessage.
+ **/
 class ChatResponseMessage implements com.cerebralfix.protobuf.Message {
   public function new():Void { }
 
-  // required string username = 1;
   @:fieldNumber(1)
+  /**
+    	 The username of the logged-in user who sent the message.
+   **/
   public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 
-  // required string message = 2;
   @:fieldNumber(2)
+  /**
+    	 The message that was sent.
+   **/
   public var message (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 }

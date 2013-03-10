@@ -2,10 +2,15 @@
 
 package com.cerebralfix.protobuf.test;
 
+/**
+  	 A message sent by the server to a client when the connection is first made.
+ **/
 class ConnectionResponseMessage implements com.cerebralfix.protobuf.Message {
   public function new():Void { }
 
-  // repeated string usernames = 1;
   @:fieldNumber(1)
+  /**
+    	 The usernames of all users who are already connected.
+   **/
   public var usernames (default, null) : com.cerebralfix.protobuf.fieldtypes.RepeatedField<com.cerebralfix.protobuf.fieldtypes.StringField>;
 }

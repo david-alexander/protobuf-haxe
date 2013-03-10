@@ -2,14 +2,21 @@
 
 package com.cerebralfix.protobuf.test;
 
+/**
+  	 A message sent by the server in response to the LoginRequestMessage.
+ **/
 class LoginResponseMessage implements com.cerebralfix.protobuf.Message {
   public function new():Void { }
 
-  // required bool logged_in = 1;
   @:fieldNumber(1)
+  /**
+    	 True if the user logged in successfully; false if the login failed because the username was already taken.
+   **/
   public var logged_in (default, null) : com.cerebralfix.protobuf.fieldtypes.BoolField;
 
-  // optional string username = 2;
   @:fieldNumber(2)
+  /**
+    	 The username that the user is now logged in with. Only set if the user logged in successfully.
+   **/
   public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
 }
