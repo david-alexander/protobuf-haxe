@@ -9,6 +9,10 @@ REM This is a hack to get around an issue (seems to be a bug in HXCPP) where an 
 >> .\src\com\cerebralfix\protobuf\fieldtypes\RepeatedField.cpp echo #include "com/cerebralfix/protobuf/fieldtypes/RepeatedField.h"
 >> .\src\com\cerebralfix\protobuf\fieldtypes\RepeatedField.cpp echo namespace com{ namespace cerebralfix{ namespace protobuf{ namespace fieldtypes{ void RepeatedField_obj::__register() { } void RepeatedField_obj::__boot() { } } } } }
 
+> .\src\com\cerebralfix\protobuf\fieldtypes\PackedRepeatedField.cpp echo #include "hxcpp.h"
+>> .\src\com\cerebralfix\protobuf\fieldtypes\PackedRepeatedField.cpp echo #include "com/cerebralfix/protobuf/fieldtypes/PackedRepeatedField.h"
+>> .\src\com\cerebralfix\protobuf\fieldtypes\PackedRepeatedField.cpp echo namespace com{ namespace cerebralfix{ namespace protobuf{ namespace fieldtypes{ void PackedRepeatedField_obj::__register() { } void PackedRepeatedField_obj::__boot() { } } } } }
+
 > .\src\com\cerebralfix\protobuf\fieldtypes\MessageField.cpp echo #include "hxcpp.h"
 >> .\src\com\cerebralfix\protobuf\fieldtypes\MessageField.cpp echo #include "com/cerebralfix/protobuf/fieldtypes/MessageField.h"
 >> .\src\com\cerebralfix\protobuf\fieldtypes\MessageField.cpp echo namespace com{ namespace cerebralfix{ namespace protobuf{ namespace fieldtypes{ void MessageField_obj::__register() { } void MessageField_obj::__boot() { } } } } }
