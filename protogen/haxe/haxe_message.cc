@@ -70,7 +70,7 @@ string HaxeFieldType(const FieldDescriptor* field)
 		case FieldDescriptor::TYPE_SINT64	: typeName << "SInt64Field"; break;
 		case FieldDescriptor::TYPE_MESSAGE:
 			{
-				typeName << "MessageField<" << FileHaxePackage(field->message_type()->file()) << field->message_type()->name() << ">";
+				typeName << "MessageField<" << FileHaxePackage(field->message_type()->file()) << "." << field->message_type()->name() << ">";
 				break;
 			}
 		case FieldDescriptor::TYPE_ENUM:
@@ -89,29 +89,57 @@ string HaxeFieldType(const FieldDescriptor* field)
 	return typeName.str();
 }
 
-void PrintFieldComment(io::Printer* printer, const FieldDescriptor* field) {
-  // Print the field's proto-syntax definition as a comment.  We don't want to
-  // print group bodies so we cut off after the first line.
-  string def = field->DebugString();
-  printer->Print("\n// $def$\n",
-    "def", def.substr(0, def.find_first_of('\n')));
+static void PrintDocumentationComment(io::Printer* printer, std::string comment)
+{
+	vector<string> comment_lines;
+	SplitStringUsing(comment, "\n", &comment_lines);
+
+	bool printed_first_line = false;
+
+	for (vector<string>::iterator i = comment_lines.begin(); i != comment_lines.end(); i++)
+	{
+		if (!i->empty())
+		{
+			if (!printed_first_line)
+			{
+				printer->Print("/**\n");
+				printed_first_line = true;
+			}
+
+			printer->Print("  \t$comment_line$\n",
+				"comment_line", *i
+			);
+		}
+	}
+
+	if (printed_first_line)
+	{
+		printer->Print(" **/\n");
+	}
 }
 
 static void GenerateField(io::Printer* printer, const FieldDescriptor* field)
 {
-	PrintFieldComment(printer, field);
-
-	string field_type = HaxeFieldType(field);
-
+	/*
+		HaxeDoc doesn't like it if there is metadata separating the documentation
+		comment from the field declaration, so we output the metadata first.
+	*/
 	stringstream field_number_string;
 	field_number_string << field->number();
-
-	printer->Print("@:fieldNumber($field_number$)\n",
+	printer->Print("\n@:fieldNumber($field_number$)\n",
 		"field_number", field_number_string.str());
 
+	// Then, output the documentation comment (this comes from the proto file).
+	SourceLocation location;
+	if (field->GetSourceLocation(&location))
+	{
+		PrintDocumentationComment(printer, location.leading_comments);
+	}
+
+	// Finally, output the field declaration itself.
 	printer->Print("public var $field_name$ (default, null) : $field_type$;\n",
 		"field_name", field->name(),
-		"field_type", field_type);
+		"field_type", HaxeFieldType(field));
 }
 
 }  // namespace
@@ -128,6 +156,12 @@ MessageGenerator::~MessageGenerator() {}
 
 void MessageGenerator::Generate(io::Printer* printer)
 {
+	SourceLocation location;
+	if (descriptor_->GetSourceLocation(&location))
+	{
+		PrintDocumentationComment(printer, location.leading_comments);
+	}
+
 	printer->Print("class $classname$ implements com.cerebralfix.protobuf.Message {\n",
 				   "classname", descriptor_->name());
 
