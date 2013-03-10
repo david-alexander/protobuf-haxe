@@ -20,7 +20,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import haxe.io.BytesOutput;
 
-class DoubleField implements ValueField<Null<Float>>
+class DoubleField implements ValueField<Null<Float>> implements PackableField
 {
 	public var value (default, default) : Null<Float>;
 
@@ -87,5 +87,10 @@ class DoubleField implements ValueField<Null<Float>>
 	public inline function isSet():Bool
 	{
 		return value != null;
+	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableSixtyFourBit;
 	}
 }

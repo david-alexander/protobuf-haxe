@@ -56,4 +56,9 @@ class BytesField implements ValueField<Bytes>
 	{
 		return value != null;
 	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableVarInt;
+	}
 }

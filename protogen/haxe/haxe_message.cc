@@ -45,6 +45,10 @@ string HaxeFieldType(const FieldDescriptor* field)
 
 	if (field->is_repeated())
 	{
+		if (field->is_packed())
+		{
+			typeName << "Packed";
+		}
 		typeName << "RepeatedField<com.cerebralfix.protobuf.fieldtypes.";
 	}
 

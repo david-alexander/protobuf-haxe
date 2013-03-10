@@ -13,49 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Protobuf-Haxe.  If not, see <http://www.gnu.org/licenses/>.
 
-package com.cerebralfix.protobuf.fieldtypes;
+package com.cerebralfix.protobuf;
 
-class SFixed32Field implements ValueField<Null<Int>> implements PackableField
+enum PackableType
 {
-	public var value:Null<Int>;
+	PackableVarInt;
+	PackableThirtyTwoBit;
+	PackableSixtyFourBit;
+}
 
-	public inline function new()
-	{
-
-	}
-
-	public inline function readFrom(data:FieldData):Void
-	{
-		switch (data)
-		{
-			case ThirtyTwoBit(dataValue):
-			{
-				value = dataValue;
-			}
-
-			default: {}
-		}
-	}
-
-	public inline function write():Array<FieldData>
-	{
-		if (value != null)
-		{
-			return [ThirtyTwoBit(value)];
-		}
-		else
-		{
-			return [];
-		}
-	}
-
-	public inline function isSet():Bool
-	{
-		return value != null;
-	}
-
-	public inline function getPackableType():PackableField.PackableType
-	{
-		return PackableThirtyTwoBit;
-	}
+interface PackableField extends Field
+{
+	function getPackableType():PackableType;
 }

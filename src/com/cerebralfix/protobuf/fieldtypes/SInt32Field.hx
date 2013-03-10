@@ -17,7 +17,7 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class SInt32Field implements ValueField<Null<Int>>
+class SInt32Field implements ValueField<Null<Int>> implements PackableField
 {
 	public var value:Null<Int>;
 
@@ -57,5 +57,10 @@ class SInt32Field implements ValueField<Null<Int>>
 	public inline function isSet():Bool
 	{
 		return value != null;
+	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableVarInt;
 	}
 }

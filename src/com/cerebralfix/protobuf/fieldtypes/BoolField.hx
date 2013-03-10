@@ -16,8 +16,9 @@
 package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
+import haxe.io.Bytes;
 
-class BoolField implements ValueField<Null<Bool>>
+class BoolField implements ValueField<Null<Bool>> implements PackableField
 {
 	public var value (default, default) : Null<Bool>;
 
@@ -54,5 +55,10 @@ class BoolField implements ValueField<Null<Bool>>
 	public inline function isSet():Bool
 	{
 		return value != null;
+	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableVarInt;
 	}
 }

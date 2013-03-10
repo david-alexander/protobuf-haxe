@@ -17,7 +17,7 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class SFixed64Field implements ValueField<Int64>
+class SFixed64Field implements ValueField<Int64> implements PackableField
 {
 	public var value:Int64;
 
@@ -54,5 +54,10 @@ class SFixed64Field implements ValueField<Int64>
 	public inline function isSet():Bool
 	{
 		return value != null;
+	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableSixtyFourBit;
 	}
 }

@@ -15,7 +15,7 @@
 
 package com.cerebralfix.protobuf.fieldtypes;
 
-class Fixed32Field implements ValueField<Null<Int>>
+class Fixed32Field implements ValueField<Null<Int>> implements PackableField
 {
 	public var value:Null<Int>;
 
@@ -52,5 +52,10 @@ class Fixed32Field implements ValueField<Null<Int>>
 	public inline function isSet():Bool
 	{
 		return value != null;
+	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableThirtyTwoBit;
 	}
 }

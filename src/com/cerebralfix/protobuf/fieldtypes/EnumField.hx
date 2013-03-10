@@ -17,7 +17,7 @@ package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
 
-class EnumField<T> implements ValueField<Null<T>>
+class EnumField<T> implements ValueField<Null<T>> implements PackableField
 {
 	public var value:Null<T>;
 
@@ -55,5 +55,10 @@ class EnumField<T> implements ValueField<Null<T>>
 	public inline function isSet():Bool
 	{
 		return value != null;
+	}
+
+	public inline function getPackableType():PackableField.PackableType
+	{
+		return PackableVarInt;
 	}
 }

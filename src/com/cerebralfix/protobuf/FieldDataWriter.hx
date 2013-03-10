@@ -59,19 +59,19 @@ class FieldDataWriter
 		writeVarInt(output, Int64.ofInt((fieldNumber << 3) | wireType));
 	}
 
-	private static inline function writeFieldDataVarInt(output : ProtobufOutput, value : Int64) : Void
+	public static inline function writeFieldDataVarInt(output : ProtobufOutput, value : Int64) : Void
 	{
 		writeVarInt(output, value);
 	}
 
-	// TOOD: Check endianness.
-	private static inline function writeFieldData32Bit(output : ProtobufOutput, value : Int) : Void
+	// TODO: Check endianness.
+	public static inline function writeFieldData32Bit(output : ProtobufOutput, value : Int) : Void
 	{
 		output.writeInt32(value);
 	}
 
-	// TOOD: Check endianness.
-	private static inline function writeFieldData64Bit(output : ProtobufOutput, value : Int64) : Void
+	// TODO: Check endianness.
+	public static inline function writeFieldData64Bit(output : ProtobufOutput, value : Int64) : Void
 	{
 		output.writeByte(Int64.toInt(Int64.shr(value, 56)));
 		output.writeByte(Int64.toInt(Int64.shr(value, 48)));
@@ -83,7 +83,7 @@ class FieldDataWriter
 		output.writeByte(Int64.toInt(Int64.shr(value, 0)));
 	}
 
-	private static inline function writeFieldDataLengthDelimited(output : ProtobufOutput, bytes : Bytes) : Void
+	public static inline function writeFieldDataLengthDelimited(output : ProtobufOutput, bytes : Bytes) : Void
 	{
 		writeVarInt(output, Int64.ofInt(bytes.length));
 		output.writeBytes(bytes, 0, bytes.length);

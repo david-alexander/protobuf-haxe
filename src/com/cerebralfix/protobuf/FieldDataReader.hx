@@ -64,7 +64,7 @@ class FieldDataReader
 		}
 	}
 
-	private static inline function readFieldDataVarInt(input : ProtobufInput) : FieldData
+	public static inline function readFieldDataVarInt(input : ProtobufInput) : FieldData
 	{
 		return switch (readVarInt(input))
 		{
@@ -77,7 +77,7 @@ class FieldDataReader
 	}
 
 	// TOOD: Check endianness.
-	private static inline function readFieldData32Bit(input : ProtobufInput) : FieldData
+	public static inline function readFieldData32Bit(input : ProtobufInput) : FieldData
 	{
 		var result = FieldData.Incomplete;
 
@@ -95,7 +95,7 @@ class FieldDataReader
 	}
 
 	// TOOD: Check endianness.
-	private static inline function readFieldData64Bit(input : ProtobufInput) : FieldData
+	public static inline function readFieldData64Bit(input : ProtobufInput) : FieldData
 	{
 		var result = FieldData.Incomplete;
 
@@ -116,7 +116,7 @@ class FieldDataReader
 		return result;
 	}
 
-	private static inline function readFieldDataLengthDelimited(input : ProtobufInput) : FieldData
+	public static inline function readFieldDataLengthDelimited(input : ProtobufInput) : FieldData
 	{
 		var result = FieldData.Incomplete;
 
