@@ -12,6 +12,7 @@ The project is still in the **very early** stages of development, and further in
 * ProtoC generator plugin (see `protogen` directory)
 * Reading and writing from byte arrays
 * All primitive types (not all tested yet - expect some issues with signed vs unsigned integers, endianness, etc.)
+* Type-safe enum fields
 * Repeated fields (packed and non-packed)
 * Messages within messages
 * Length-prefixed messages (à la <a href="https://code.google.com/p/protobuf-net/">protobuf-net</a>)
@@ -20,7 +21,6 @@ The project is still in the **very early** stages of development, and further in
 
 ### To-Do List
 
-* Type-safe enum fields
 * Required fields (currently all are considered optional, even if specified as required in the proto file)
 * Unit tests for the library and the ProtoC generator, covering all data types
 * Memory pooling of messages
@@ -28,6 +28,7 @@ The project is still in the **very early** stages of development, and further in
 * Sample code (e.g. basic chat client/server)
 * Support for Protobuf RPC Services
 * An option to interpret union messages as parameterized enums
+* Proper handling of unknown fields
 * Support for the now-deprecated "group" field type
 
 ### Known Issues
