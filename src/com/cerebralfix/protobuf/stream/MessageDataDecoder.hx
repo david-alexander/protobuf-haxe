@@ -62,7 +62,6 @@ import haxe.io.Bytes;
 			var messageLength = getMessageLength();
 			var messageBytes = _bytes.sub(HEADER_LENGTH, messageLength);
 			var message = new TBaseMessage();
-			message.initializeMessageFields();
 			message.readMessageFields(new BytesReader(messageBytes));
 			consumeBytes(HEADER_LENGTH + messageLength);
 			return message;

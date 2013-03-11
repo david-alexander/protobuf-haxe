@@ -137,12 +137,10 @@ class Main
 		if (event.keyCode == 13) // carriage return
 		{
 			var baseMessage = new BaseMessage();
-			baseMessage.initializeMessageFields();
 
 			if (_isLoggedIn)
 			{
 				var message = new ChatRequestMessage();
-				message.initializeMessageFields();
 				message.message.value = _messageField.text;
 
 				baseMessage.chat_request_message.value = message;
@@ -150,7 +148,6 @@ class Main
 			else if (_isWaitingForUsername)
 			{
 				var message = new LoginRequestMessage();
-				message.initializeMessageFields();
 				message.username.value = _messageField.text;
 
 				baseMessage.login_request_message.value = message;

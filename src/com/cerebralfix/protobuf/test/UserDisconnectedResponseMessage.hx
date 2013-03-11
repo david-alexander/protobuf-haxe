@@ -6,11 +6,15 @@ package com.cerebralfix.protobuf.test;
   	 A message sent by the server to all clients when a user disconnects.
  **/
 class UserDisconnectedResponseMessage implements com.cerebralfix.protobuf.Message {
-  public function new():Void { }
 
   @:fieldNumber(1)
   /**
     	 The username of the user who disconnected.
    **/
   public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
+  public function new():Void
+  {
+    username = new com.cerebralfix.protobuf.fieldtypes.StringField();
+  }
+
 }

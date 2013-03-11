@@ -25,7 +25,6 @@ class MessageBuilder
 {
 	public macro static function buildMessage() : Array<Field>
 	{
-		var initExprs = new Array<Expr>();
 		var readCases = new Array<Case>();
 		var writeExprs = new Array<Expr>();
 		var submessageExprs = new Array<Expr>();
@@ -35,14 +34,11 @@ class MessageBuilder
 
 		for (fieldInfo in MacroUtilities.getDataFieldsImplementingInterface(fields, fieldInterface))
 		{
-			addField(fieldInfo, initExprs, readCases, writeExprs, submessageExprs);
+			addField(fieldInfo, readCases, writeExprs, submessageExprs);
 		}
 
-		var initBlock = MacroUtilities.expr(ExprDef.EBlock(initExprs));
 		var readSwitch = MacroUtilities.expr(ExprDef.ESwitch(macro fieldData.fieldNumber, readCases, null));
 		var writeBlock = MacroUtilities.expr(ExprDef.EBlock(writeExprs));
-
-		var initFunc = MacroUtilities.functionFieldFromExpression(macro function initializeMessageFields():Void { $initBlock; } );
 
 		var readFunc = MacroUtilities.functionFieldFromExpression(
 			macro function readMessageFields(input:com.cerebralfix.protobuf.utilities.BytesReader):Bool {
@@ -93,18 +89,15 @@ class MessageBuilder
 			}
 		);
 
-		return fields.concat([initFunc, readFunc, writeFunc, typeFunc, submessageFunc]);
+		return fields.concat([readFunc, writeFunc, typeFunc, submessageFunc]);
 	}
 
-	private static function addField(fieldInfo : MacroUtilities.FieldInfo, initExprs : Array<Expr>, readCases : Array<Case>, writeExprs : Array<Expr>, submessageExprs:Array<Expr>) : Void
+	private static function addField(fieldInfo : MacroUtilities.FieldInfo, readCases : Array<Case>, writeExprs : Array<Expr>, submessageExprs:Array<Expr>) : Void
 	{
 		var metadata = getMetadataForMessageField(fieldInfo.field);
 		var fieldNumberExpr = MacroUtilities.expr(EConst(CInt(Std.string(metadata.fieldNumber))));
 
 		var fieldExpr = MacroUtilities.expr(ExprDef.EConst(Constant.CIdent(fieldInfo.field.name)));
-		var newExpr = MacroUtilities.expr(fieldInfo.constructorExprDef);
-
-		var initExpr = macro $fieldExpr = $newExpr;
 
 		var readCase =
 			{
@@ -121,7 +114,6 @@ class MessageBuilder
 			}
 		};
 
-		initExprs.push(initExpr);
 		readCases.push(readCase);
 		writeExprs.push(writeExpr);
 

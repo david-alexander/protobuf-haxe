@@ -20,7 +20,6 @@ import haxe.io.Output;
 
 @:autoBuild(com.cerebralfix.protobuf.macro.MessageBuilder.buildMessage()) interface Message
 {
-	function initializeMessageFields():Void;
 	function readMessageFields(input:BytesReader):Bool;
 	function writeMessageFields(output:Output):Void;
 

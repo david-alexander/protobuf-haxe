@@ -6,7 +6,6 @@ package com.cerebralfix.protobuf.test;
   	 A message sent by the server in response to the LoginRequestMessage.
  **/
 class LoginResponseMessage implements com.cerebralfix.protobuf.Message {
-  public function new():Void { }
 
   @:fieldNumber(1)
   /**
@@ -19,4 +18,10 @@ class LoginResponseMessage implements com.cerebralfix.protobuf.Message {
     	 The username that the user is now logged in with. Only set if the user logged in successfully.
    **/
   public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
+  public function new():Void
+  {
+    logged_in = new com.cerebralfix.protobuf.fieldtypes.BoolField();
+    username = new com.cerebralfix.protobuf.fieldtypes.StringField();
+  }
+
 }

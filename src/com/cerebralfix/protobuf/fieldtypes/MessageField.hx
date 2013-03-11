@@ -37,7 +37,6 @@ import com.cerebralfix.protobuf.field.ValueField;
 			case LengthDelimited(bytes):
 			{
 				value = new TMessage();
-				value.initializeMessageFields();
 				value.readMessageFields(new BytesReader(bytes));
 			}
 

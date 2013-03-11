@@ -16,6 +16,7 @@
 package com.cerebralfix.protobuf.fieldtypes;
 
 import haxe.Int64;
+import com.cerebralfix.protobuf.EnumDecoder;
 import com.cerebralfix.protobuf.field.FieldData;
 import com.cerebralfix.protobuf.field.PackableField;
 import com.cerebralfix.protobuf.field.PackableType;
@@ -23,20 +24,22 @@ import com.cerebralfix.protobuf.field.ValueField;
 
 class EnumField<T> implements ValueField<Null<T>> implements PackableField
 {
-	public var value:Null<T>;
+	public var value (default, default) : Null<T>;
 
-	public inline function new()
+	private var _decoder : EnumDecoder<T>;
+
+	public inline function new(decoder : EnumDecoder<T>)
 	{
-		
+		_decoder = decoder;
 	}
 
 	public inline function readFrom(data:FieldData):Void
 	{
 		switch (data)
 		{
-			case VarInt(_):
+			case VarInt(dataValue):
 			{
-				// TODO
+				value = _decoder.enumValueFromInt(Int64.toInt(dataValue));
 			}
 
 			default: {}
@@ -47,8 +50,7 @@ class EnumField<T> implements ValueField<Null<T>> implements PackableField
 	{
 		if (value != null)
 		{
-			// TODO
-			return [];
+			return [VarInt(Int64.ofInt(_decoder.intFromEnumValue(value)))];
 		}
 		else
 		{
@@ -62,9 +64,6 @@ class EnumField<T> implements ValueField<Null<T>> implements PackableField
 	}
 
 	public inline function getPackableType():PackableType
-import com.cerebralfix.protobuf.field.PackableField;
-import com.cerebralfix.protobuf.field.PackableType;
-import com.cerebralfix.protobuf.field.ValueField;
 	{
 		return PackableVarInt;
 	}

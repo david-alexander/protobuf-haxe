@@ -6,11 +6,15 @@ package com.cerebralfix.protobuf.test;
   	 A message sent by the client when the user wishes to log in under a particular username.
  **/
 class LoginRequestMessage implements com.cerebralfix.protobuf.Message {
-  public function new():Void { }
 
   @:fieldNumber(1)
   /**
     	 The username that the user wants to use.
    **/
   public var username (default, null) : com.cerebralfix.protobuf.fieldtypes.StringField;
+  public function new():Void
+  {
+    username = new com.cerebralfix.protobuf.fieldtypes.StringField();
+  }
+
 }
