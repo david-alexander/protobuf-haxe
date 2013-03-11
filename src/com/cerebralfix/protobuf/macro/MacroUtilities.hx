@@ -19,7 +19,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
-typedef FieldInfo = {field : Field, classType : ClassType, constructorExprDef : ExprDef};
+typedef FieldInfo = {field : Field, classType : ClassType, typeParams : Array<Type>};
 
 class MacroUtilities
 {
@@ -40,13 +40,12 @@ class MacroUtilities
 				case FVar(complexType, _) | FProp(_, _, complexType, _):
 				{
 					var classType = classTypeFromComplexType(complexType);
+					var typeParams = typeParamsFromComplexType(complexType);
 					var typePath = typePathFromComplexType(complexType);
 
-					if (classType != null && implementsInterface(classType, targetInterface) && typePath != null)
+					if (classType != null && typeParams != null && implementsInterface(classType, targetInterface) && typePath != null)
 					{
-						// TODO: Use the correct type parameters.
-						var typeParams:Array<Expr> = [];
-						result.push({field: field, classType: classType, constructorExprDef: ExprDef.ENew(typePath, typeParams)});
+						result.push({field: field, classType: classType, typeParams: typeParams});
 					}
 				}
 
@@ -135,7 +134,7 @@ class MacroUtilities
 	 **/
 	public static function getMangledName(classType:ClassType)
 	{
-		return "_" + classType.pack.join("_") + classType.name;
+		return "_" + classType.pack.join("_") + "_" + classType.name;
 	}
 
 	/**
@@ -145,13 +144,8 @@ class MacroUtilities
 	 **/
 	public static function resolveComplexType(t:ComplexType):Type
 	{
-		// From http://en.usenet.digipedia.org/thread/14424/1626/
-		return Context.typeof( 
-			expr(EBlock([
-				expr(EVars([ { name:'_', type: t, expr: null } ])),
-				expr(EConst(CIdent('_')))
-				]))
-			);
+		// Adapted from http://en.usenet.digipedia.org/thread/14424/1626/
+		return Context.typeof( macro { var v:$t; v; } );
 	}
 
 	/**
@@ -166,6 +160,22 @@ class MacroUtilities
 			case TInst(classTypeRef, _):
 			{
 				return classTypeRef.get();
+			}
+
+			default:
+			{
+				return null;
+			}
+		}
+	}
+
+	public static function typeParamsFromComplexType(complexType:ComplexType):Array<Type>
+	{
+		switch (resolveComplexType(complexType))
+		{
+			case TInst(_, typeParams):
+			{
+				return typeParams;
 			}
 
 			default:

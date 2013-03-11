@@ -25,4 +25,5 @@ import haxe.io.Output;
 
 	function getMessageTypeId():MessageTypeId;
 	function getActiveSubmessage():Message;
+	function setActiveSubmessage(message:Message):Void;
 }

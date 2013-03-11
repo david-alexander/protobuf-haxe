@@ -19,7 +19,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import flash.utils.IDataOutput;
 
-class FlashMessageOutput
+@:generic class FlashMessageOutput<TBaseMessage : (Message, {function new():Void;})>
 {
 	private var _output:IDataOutput;
 
@@ -28,11 +28,13 @@ class FlashMessageOutput
 		_output = output;
 	}
 
-	// TODO: Support automatically packaging this into a union message.
 	public function writeMessage(message:Message):Void
 	{
+		var baseMessage = new TBaseMessage();
+		baseMessage.setActiveSubmessage(message);
+
 		var bytesOutput:BytesOutput = new BytesOutput();
-		message.writeMessageFields(bytesOutput);
+		baseMessage.writeMessageFields(bytesOutput);
 
 		var bytes:Bytes = bytesOutput.getBytes();
 

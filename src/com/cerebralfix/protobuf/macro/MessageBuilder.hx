@@ -27,14 +27,15 @@ class MessageBuilder
 	{
 		var readCases = new Array<Case>();
 		var writeExprs = new Array<Expr>();
-		var submessageExprs = new Array<Expr>();
+		var getSubmessageExprs = new Array<Expr>();
+		var setSubmessageCases = new Array<Case>();
 
 		var fields = Context.getBuildFields();
 		var fieldInterface = MacroUtilities.classTypeFromComplexType(macro : com.cerebralfix.protobuf.field.Field);
 
 		for (fieldInfo in MacroUtilities.getDataFieldsImplementingInterface(fields, fieldInterface))
 		{
-			addField(fieldInfo, readCases, writeExprs, submessageExprs);
+			addField(fieldInfo, readCases, writeExprs, getSubmessageExprs, setSubmessageCases);
 		}
 
 		var readSwitch = MacroUtilities.expr(ExprDef.ESwitch(macro fieldData.fieldNumber, readCases, null));
@@ -78,21 +79,28 @@ class MessageBuilder
 			}
 		);
 
-		var submessageBlock = MacroUtilities.expr(ExprDef.EBlock(submessageExprs));
+		var getSubmessageBlock = MacroUtilities.expr(ExprDef.EBlock(getSubmessageExprs));
+		var setSubmessageSwitch = MacroUtilities.expr(ExprDef.ESwitch(macro message.getMessageTypeId(), setSubmessageCases, macro {}));
 
 		var typeFunc = MacroUtilities.functionFieldFromExpression(macro function getMessageTypeId():com.cerebralfix.protobuf.MessageTypeId { return $v{MacroUtilities.getMangledName(Context.getLocalClass().get())}; });
 
-		var submessageFunc = MacroUtilities.functionFieldFromExpression(
+		var getSubmessageFunc = MacroUtilities.functionFieldFromExpression(
 			macro function getActiveSubmessage():com.cerebralfix.protobuf.Message {
-				$submessageBlock;
+				$getSubmessageBlock;
 				return null;
 			}
 		);
 
-		return fields.concat([readFunc, writeFunc, typeFunc, submessageFunc]);
+		var setSubmessageFunc = MacroUtilities.functionFieldFromExpression(
+			macro function setActiveSubmessage(message:com.cerebralfix.protobuf.Message):Void {
+				$setSubmessageSwitch;
+			}
+		);
+
+		return fields.concat([readFunc, writeFunc, typeFunc, getSubmessageFunc, setSubmessageFunc]);
 	}
 
-	private static function addField(fieldInfo : MacroUtilities.FieldInfo, readCases : Array<Case>, writeExprs : Array<Expr>, submessageExprs:Array<Expr>) : Void
+	private static function addField(fieldInfo : MacroUtilities.FieldInfo, readCases : Array<Case>, writeExprs : Array<Expr>, getSubmessageExprs:Array<Expr>, setSubmessageCases:Array<Case>) : Void
 	{
 		var metadata = getMetadataForMessageField(fieldInfo.field);
 		var fieldNumberExpr = MacroUtilities.expr(EConst(CInt(Std.string(metadata.fieldNumber))));
@@ -117,19 +125,29 @@ class MessageBuilder
 		readCases.push(readCase);
 		writeExprs.push(writeExpr);
 
-		checkForSubmessage(fieldInfo.classType, fieldExpr, submessageExprs);
+		checkForSubmessage(fieldInfo, fieldExpr, getSubmessageExprs, setSubmessageCases);
 	}
 
-	private static function checkForSubmessage(fieldClassType : ClassType, fieldExpr:Expr, submessageExprs:Array<Expr>):Void
+	private static function checkForSubmessage(fieldInfo : MacroUtilities.FieldInfo, fieldExpr:Expr, getSubmessageExprs:Array<Expr>, setSubmessageCases:Array<Case>):Void
 	{
-		if (fieldClassType.name.indexOf("MessageField") == 0)
+		if (fieldInfo.classType.name.indexOf("MessageField") == 0)
 		{
-			submessageExprs.push(macro
+			var mangledMessageTypeName = fieldInfo.classType.name.substring("MessageField".length);
+
+			getSubmessageExprs.push(macro
 				{
 					if ($fieldExpr.isSet())
 					{
 						return $fieldExpr.value;
 					}
+				}
+			);
+
+			setSubmessageCases.push(
+				{
+					values: [macro $v{mangledMessageTypeName}],
+					guard: null,
+					expr: macro $fieldExpr.value = untyped message
 				}
 			);
 		}

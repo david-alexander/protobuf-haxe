@@ -35,7 +35,7 @@ class Main
 	private static var _socket:Socket;
 	private static var _decoder:MessageDataDecoder<BaseMessage>;
 	private static var _dispatcher:MessageDispatcher<BaseMessage>;
-	private static var _output:FlashMessageOutput;
+	private static var _output:FlashMessageOutput<BaseMessage>;
 
 	private static var _messageView:TextField;
 	private static var _messageField:TextField;
@@ -59,7 +59,7 @@ class Main
 		_dispatcher.registerMessageHandler(onNewUserResponseMessage);
 		_dispatcher.registerMessageHandler(onChatResponseMessage);
 
-		_output = new FlashMessageOutput(_socket);
+		_output = new FlashMessageOutput<BaseMessage>(_socket);
 
 		_socket.connect("localhost", 8999);
 	}
@@ -106,7 +106,7 @@ class Main
 	{
 		if (message.logged_in.value)
 		{
-			trace("Logged in.");
+			printText("Logged in.\n");
 			_isLoggedIn = true;
 		}
 		else
@@ -136,26 +136,21 @@ class Main
 	{
 		if (event.keyCode == 13) // carriage return
 		{
-			var baseMessage = new BaseMessage();
-
 			if (_isLoggedIn)
 			{
 				var message = new ChatRequestMessage();
 				message.message.value = _messageField.text;
-
-				baseMessage.chat_request_message.value = message;
+				_output.writeMessage(message);
 			}
 			else if (_isWaitingForUsername)
 			{
 				var message = new LoginRequestMessage();
 				message.username.value = _messageField.text;
-
-				baseMessage.login_request_message.value = message;
+				_output.writeMessage(message);
 
 				_isWaitingForUsername = false;
 			}
 
-			_output.writeMessage(baseMessage);
 			_socket.flush();
 			_messageField.text = "";
 		}
