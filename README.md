@@ -34,5 +34,4 @@ The project is still in the **very early** stages of development, and further in
 ### Known Issues
 
 * The `RepeatedField` class seems to be triggering a bug in HXCPP which causes the C++ build to fail. It is currently being worked around using a batch script that deletes the offending C++ code before the C++ compiler is run.
-* Enums are not yet properly implemented, even though the EnumField class exists. Also, the ProtoC generator may not generate valid code for them.
 * The MessageBuilder macros can generate cryptic compiler errors (such as "this pattern is unused") when given incorrect message specifications (e.g. missing field numbers). The file/line information for these errors is also incorrect.
