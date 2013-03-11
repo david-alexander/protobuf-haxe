@@ -23,6 +23,7 @@
 
 #include <string>
 #include <google/protobuf/descriptor.h>
+#include <google/protobuf/io/printer.h>
 
 namespace google {
 namespace protobuf {
@@ -70,6 +71,8 @@ inline string ClassName(const ServiceDescriptor* descriptor) {
   return ToHaxeName(descriptor->full_name(), descriptor->file());
 }
 string ClassName(const FileDescriptor* descriptor);
+
+void PrintDocumentationComment(io::Printer* printer, std::string comment);
 
 }  // namespace haxe
 }  // namespace compiler

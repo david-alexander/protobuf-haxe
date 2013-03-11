@@ -157,6 +157,35 @@ string ClassName(const FileDescriptor* descriptor) {
   return result;
 }
 
+void PrintDocumentationComment(io::Printer* printer, std::string comment)
+{
+	vector<string> comment_lines;
+	SplitStringUsing(comment, "\n", &comment_lines);
+
+	bool printed_first_line = false;
+
+	for (vector<string>::iterator i = comment_lines.begin(); i != comment_lines.end(); i++)
+	{
+		if (!i->empty())
+		{
+			if (!printed_first_line)
+			{
+				printer->Print("/**\n");
+				printed_first_line = true;
+			}
+
+			printer->Print("  \t$comment_line$\n",
+				"comment_line", *i
+			);
+		}
+	}
+
+	if (printed_first_line)
+	{
+		printer->Print(" **/\n");
+	}
+}
+
 }  // namespace haxe
 }  // namespace compiler
 }  // namespace protobuf

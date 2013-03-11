@@ -23,7 +23,9 @@
 
 #include <string>
 #include <vector>
+#include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/common.h>
+#include <google/protobuf/compiler/code_generator.h>
 
 namespace google {
 namespace protobuf {
@@ -51,12 +53,16 @@ class FileGenerator {
   bool Validate(string* error);
 
   void Generate(io::Printer* printer, int message_number);
+  void GenerateSiblings(const string& package_dir, OutputDirectory* output_directory);
 
   const string& haxe_package() { return haxe_package_; }
 
  private:
   const FileDescriptor* file_;
   string haxe_package_;
+  
+  void GenerateEnumSiblings(const string& package_dir, OutputDirectory* output_directory, Descriptor const* message);
+  void GenerateMessageSiblings(const string& package_dir, OutputDirectory* output_directory, Descriptor const* root_message);
 
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(FileGenerator);
 };

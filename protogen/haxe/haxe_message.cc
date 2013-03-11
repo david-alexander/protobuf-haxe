@@ -75,7 +75,7 @@ string HaxeFieldType(const FieldDescriptor* field)
 			}
 		case FieldDescriptor::TYPE_ENUM:
 			{
-				typeName << "EnumField<" << field->enum_type()->name() << ">";
+				typeName << "EnumField<" << FileHaxePackage(field->enum_type()->file()) << "." << field->enum_type()->name() << ">";
 				break;
 			}
 		case FieldDescriptor::TYPE_GROUP: GOOGLE_LOG(FATAL) << "Groups are not yet supported in Protobuf-Haxe"; return NULL;
@@ -89,33 +89,19 @@ string HaxeFieldType(const FieldDescriptor* field)
 	return typeName.str();
 }
 
-static void PrintDocumentationComment(io::Printer* printer, std::string comment)
+string HaxeFieldConstructorParameters(const FieldDescriptor* field)
 {
-	vector<string> comment_lines;
-	SplitStringUsing(comment, "\n", &comment_lines);
+	stringstream parameters;
 
-	bool printed_first_line = false;
-
-	for (vector<string>::iterator i = comment_lines.begin(); i != comment_lines.end(); i++)
-	{
-		if (!i->empty())
-		{
-			if (!printed_first_line)
+	switch (field->type()) {
+		case FieldDescriptor::TYPE_ENUM:
 			{
-				printer->Print("/**\n");
-				printed_first_line = true;
+				parameters << "new " << FileHaxePackage(field->enum_type()->file()) << ".EnumDecoder_" << field->enum_type()->name() << "()";
+				break;
 			}
-
-			printer->Print("  \t$comment_line$\n",
-				"comment_line", *i
-			);
-		}
 	}
 
-	if (printed_first_line)
-	{
-		printer->Print(" **/\n");
-	}
+	return parameters.str();
 }
 
 static void GenerateField(io::Printer* printer, const FieldDescriptor* field)
@@ -140,6 +126,14 @@ static void GenerateField(io::Printer* printer, const FieldDescriptor* field)
 	printer->Print("public var $field_name$ (default, null) : $field_type$;\n",
 		"field_name", field->name(),
 		"field_type", HaxeFieldType(field));
+}
+
+static void GenerateFieldInitialization(io::Printer* printer, const FieldDescriptor* field)
+{
+	printer->Print("$field_name$ = new $field_type$($field_constructor_parameters$);\n",
+		"field_name", field->name(),
+		"field_type", HaxeFieldType(field),
+		"field_constructor_parameters", HaxeFieldConstructorParameters(field));
 }
 
 }  // namespace
@@ -167,12 +161,22 @@ void MessageGenerator::Generate(io::Printer* printer)
 
 	printer->Indent();
 
-	printer->Print("public function new():Void { }\n");
-
 	for (int i = 0; i < descriptor_->field_count(); i++)
 	{
 		GenerateField(printer, descriptor_->field(i));
 	}
+
+	printer->Print("public function new():Void\n");
+	printer->Print("{\n");
+	printer->Indent();
+
+	for (int i = 0; i < descriptor_->field_count(); i++)
+	{
+		GenerateFieldInitialization(printer, descriptor_->field(i));
+	}
+
+	printer->Outdent();
+	printer->Print("}\n\n");
 	
 	printer->Outdent();
 	printer->Print("}\n");

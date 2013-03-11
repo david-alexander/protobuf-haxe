@@ -68,18 +68,20 @@ bool HaxeGenerator::Generate(const FileDescriptor* file,
 	vector<pair<string, string> > options;
 	ParseOptions(parameter, &options);
 
+	// Validate the input.
+	FileGenerator file_generator(file);
+	if (!file_generator.Validate(error))
+	{
+		return false;
+	}
+
+	// Generate the package path.
+	string package_dir = StringReplace(file_generator.haxe_package(), ".", "/", true);
+	if (!package_dir.empty()) package_dir += "/";
+
 	for (int i = 0; i < file->message_type_count(); i++)
 	{
-		// Validate the input.
-		FileGenerator file_generator(file);
-		if (!file_generator.Validate(error))
-		{
-			return false;
-		}
-
 		// Generate the filename.
-		string package_dir = StringReplace(file_generator.haxe_package(), ".", "/", true);
-		if (!package_dir.empty()) package_dir += "/";
 		string haxe_filename = package_dir + file->message_type(i)->name() + ".hx";
 
 		// Write the file.
@@ -87,9 +89,9 @@ bool HaxeGenerator::Generate(const FileDescriptor* file,
 		io::Printer printer(output.get(), '$');
 
 		file_generator.Generate(&printer, i);
-
-		// TODO: Generate "siblings" (enums, services, etc.)
 	}
+
+	file_generator.GenerateSiblings(package_dir, output_directory);
 
 	return true;
 }
