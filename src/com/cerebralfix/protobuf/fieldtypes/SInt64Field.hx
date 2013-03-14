@@ -62,9 +62,6 @@ class SInt64Field implements ValueField<Int64> implements PackableField
 	}
 
 	public inline function getPackableType():PackableType
-import com.cerebralfix.protobuf.field.PackableField;
-import com.cerebralfix.protobuf.field.PackableType;
-import com.cerebralfix.protobuf.field.ValueField;
 	{
 		return PackableVarInt;
 	}

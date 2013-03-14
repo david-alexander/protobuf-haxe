@@ -62,9 +62,6 @@ class BytesField implements ValueField<Bytes>
 	}
 
 	public inline function getPackableType():PackableType
-import com.cerebralfix.protobuf.field.PackableField;
-import com.cerebralfix.protobuf.field.PackableType;
-import com.cerebralfix.protobuf.field.ValueField;
 	{
 		return PackableVarInt;
 	}
